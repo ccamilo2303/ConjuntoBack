@@ -1,16 +1,11 @@
 openapi: 3.0.1
 info:
-  description: Plaid integration
+  description: App conjunto integration
   version: 1.0.0
   license:
     name: Licencia Apache 2.0
     url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
-  termsOfService: 'https://icb.pbank.usa.com/en/privacypolicies'
-  contact:
-    email: support@pibank.usa.com
-    name: Pibank USA
-    url: 'https://icb.pbank.usa.com/en/contact'
-  title: Plaid Service API
+  title: Conjunto app Service API
 servers:
   - url: https://#uri/api/1.0.0
 tags:
@@ -72,14 +67,582 @@ paths:
                 $ref: '#/components/schemas/ConjuntosRes'
         '400':
           description: Error en los parámetros de búsqueda proporcionados
+        '404':
+          description: No se encontraron conjuntos residenciales con los filtros aplicados
+
+  /app/residentes/registro:
+    post:
+      tags:
+        - app
+      operationId: residentesRegistro
+      summary: Registra una nueva solicitud de registro para un residente o propietario
+      description: Permite a un residente o propietario enviar su solicitud de registro en la app. La solicitud quedará en estado "pendiente" hasta ser revisada por un administrador.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResidenteRegistroRequest'
+
+      responses:
+        '201':
+          description: Solicitud de registro creada correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResidenteRegistroResponse'
+        '400':
+          description: Error de validación en los datos enviados
+        '409':
+          description: Ya existe una solicitud con ese correo electrónico
+
+  /web/residentes:
+    get:
+      tags:
+        - web
+      operationId: residentes
+      summary: Obtiene una lista de las solicitudes de registro de residentes
+      description: Permite al administrador consultar todas las solicitudes de registro, incluyendo su estado (pendiente, aprobado, rechazado).
+      parameters:
+        - in: query
+          name: estado_solicitud
+          required: false
+          description: Filtra las solicitudes por estado. Puede ser 'pendiente', 'aprobado', o 'rechazado'.
+          schema:
+            type: string
+            enum: ['pendiente', 'aprobado', 'rechazado']
+        - in: query
+          name: limit
+          required: false
+          description: Número de registros a devolver por página (paginación).
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: offset
+          required: false
+          description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Lista de solicitudes de registro de residentes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Residente"
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+
+  /web/residentes/{id}/estado:
+    put:
+      tags:
+        - web
+      operationId: residentesIdEstado
+      summary: Aprobar o rechazar solicitud de residente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del residente
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                estado_solicitud:
+                  type: string
+                  enum: ['aprobado', 'rechazado']
+                motivo_rechazo:
+                  type: string
+                  nullable: true
+      responses:
+        '200':
+          description: Estado de la solicitud actualizado
+        '400':
+          description: Error al actualizar el estado
+  /app/residentes/facturas:
+    get:
+      tags:
+        - app
+      operationId: residentesFacturas
+      summary: Obtiene las facturas de un residente
+      responses:
+        '200':
+          description: Lista de facturas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FacturaResponse'
+
+        '404':
+          description: Residente no encontrado
+
+  /web/pagos/manual:
+    post:
+      tags:
+        - web
+      operationId: pagoManual
+      summary: Marca un pago manual realizado por un residente (por transferencia, efectivo, etc.)
+      description: Permite al administrador registrar un pago manual para una factura (por ejemplo, pagos realizados por transferencia o en efectivo).
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                factura_id:
+                  type: integer
+                  description: ID de la factura que se está marcando como pagada manualmente
+                  example: 345
+                monto_pagado:
+                  type: number
+                  format: float
+                  description: Monto total pagado
+                  example: 150000.00
+                metodo_pago:
+                  type: string
+                  enum: ['transferencia', 'efectivo']
+                  description: Método de pago utilizado (puede ser transferencia bancaria o efectivo)
+                  example: "transferencia"
+                fecha_pago:
+                  type: string
+                  format: date-time
+                  description: Fecha en la que se realizó el pago
+                  example: "2025-01-30T14:30:00Z"
+      responses:
+        '200':
+          description: Pago manual registrado correctamente
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  error:
+                  id:
+                    type: integer
+                    description: ID del pago registrado
+                    example: 456
+                  factura_id:
+                    type: integer
+                    description: ID de la factura asociada al pago
+                    example: 345
+                  monto_pagado:
+                    type: number
+                    format: float
+                    description: Monto pagado
+                    example: 150000.00
+                  metodo_pago:
                     type: string
-                    example: "Invalid parameters"
+                    enum: ['transferencia', 'efectivo']
+                    description: Método de pago utilizado
+                    example: "transferencia"
+                  fecha_pago:
+                    type: string
+                    format: date-time
+                    description: Fecha en que se registró el pago
+                    example: "2025-01-30T14:30:00Z"
+        '400':
+          description: Error en los datos proporcionados (por ejemplo, factura no encontrada)
+        '404':
+          description: Factura no encontrada
+
+  /web/reportes/pagos-morosos:
+    get:
+      tags:
+        - web
+      operationId: pagosMorosos
+      summary: Obtiene un reporte de pagos realizados y morosos en un rango de fechas
+      description: Permite al administrador obtener un reporte de pagos realizados y de residentes morosos dentro de un rango de fechas específico.
+      parameters:
+        - in: query
+          name: fecha_inicio
+          required: true
+          description: Fecha de inicio del rango
+          schema:
+            type: string
+            format: date
+            example: "2025-01-01"
+        - in: query
+          name: fecha_fin
+          required: true
+          description: Fecha de fin del rango
+          schema:
+            type: string
+            format: date
+            example: "2025-01-31"
+      responses:
+        '200':
+          description: Reporte de pagos y morosos generado con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_pagado:
+                    type: number
+                    format: float
+                    description: Total de pagos realizados en el rango de fechas
+                    example: 500000.00
+                  total_morosidad:
+                    type: number
+                    format: float
+                    description: Total de pagos pendientes de residentes morosos
+                    example: 200000.00
+                  pagos_realizados:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        residente_id:
+                          type: integer
+                          description: ID del residente que realizó el pago
+                          example: 101
+                        nombre_residente:
+                          type: string
+                          description: Nombre del residente
+                          example: "Juan Pérez"
+                        monto_pagado:
+                          type: number
+                          format: float
+                          description: Monto pagado por el residente
+                          example: 150000.00
+                        fecha_pago:
+                          type: string
+                          format: date-time
+                          description: Fecha en que se realizó el pago
+                          example: "2025-01-15T14:30:00Z"
+                  morosos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        residente_id:
+                          type: integer
+                          description: ID del residente moroso
+                          example: 102
+                        nombre_residente:
+                          type: string
+                          description: Nombre del residente moroso
+                          example: "Ana Gómez"
+                        monto_pendiente:
+                          type: number
+                          format: float
+                          description: Monto pendiente de pago
+                          example: 200000.00
+                        fecha_vencimiento:
+                          type: string
+                          format: date
+                          description: Fecha de vencimiento de la factura pendiente
+                          example: "2025-01-10"
+        '400':
+          description: Error en los parámetros de fechas proporcionados
+        '404':
+          description: No se encontraron pagos ni morosos en el rango de fechas proporcionado
+
+  /web/avisos:
+    post:
+      tags:
+        - web
+      operationId: avisos
+      summary: Publicar un aviso para todos los residentes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                contenido:
+                  type: string
+      responses:
+        '201':
+          description: Aviso publicado correctamente
+        '400':
+          description: Error al publicar el aviso
+
+  /app/avisos/historial:
+    get:
+      tags:
+        - app
+      operationId: avisosHistorial
+      summary: Obtiene el historial de avisos enviados a los residentes
+      description: Permite a los residentes consultar el historial de avisos publicados por el administrador en un rango de fechas específico.
+      parameters:
+        - in: query
+          name: fecha_inicio
+          required: false
+          description: Fecha de inicio del rango de fechas para consultar los avisos
+          schema:
+            type: string
+            format: date
+            example: "2025-01-01"
+        - in: query
+          name: fecha_fin
+          required: false
+          description: Fecha de fin del rango de fechas para consultar los avisos
+          schema:
+            type: string
+            format: date
+            example: "2025-01-31"
+        - in: query
+          name: limit
+          required: false
+          description: Número de registros a devolver por página (paginación).
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: offset
+          required: false
+          description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Historial de avisos consultado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HistorialAvisosResponse'
+        '400':
+          description: Error en los parámetros de fecha proporcionados
+        '404':
+          description: No se encontraron avisos en el rango de fechas proporcionado
+
+  /web/notificaciones:
+    post:
+      tags:
+        - web
+      operationId: notificaciones
+      summary: Enviar notificación de aviso a los residentes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                aviso_id:
+                  type: integer
+                residente_id:
+                  type: integer
+                tipo:
+                  type: string
+                  enum: ['push', 'email']
+      responses:
+        '200':
+          description: Notificación enviada
+        '400':
+          description: Error al enviar la notificación
+  /app/usuarios/estado-cuenta:
+    get:
+      tags:
+        - app
+      operationId: usuariosEstadoCuenta
+      summary: Obtiene el estado de cuenta del usuario, incluyendo saldo a favor y saldo en mora
+      description: Permite al residente consultar su estado de cuenta, incluyendo el estado, saldo a favor y saldo en mora.
+      responses:
+        '200':
+          description: Información del estado de cuenta del usuario consultada correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  usuario_id:
+                    type: integer
+                    description: ID del usuario
+                    example: 101
+                  nombre:
+                    type: string
+                    description: Nombre del residente
+                    example: "Juan Pérez"
+                  estado:
+                    type: string
+                    description: Estado actual del usuario (por ejemplo, "activo", "moroso")
+                    example: "activo"
+                  saldo_a_favor:
+                    type: number
+                    format: float
+                    description: Monto total que el usuario tiene a favor (saldo positivo)
+                    example: 200000.00
+                  saldo_en_mora:
+                    type: number
+                    format: float
+                    description: Monto total que el usuario tiene pendiente en mora (saldo negativo)
+                    example: 50000.00
+                  total_deuda:
+                    type: number
+                    format: float
+                    description: Total de la deuda combinando saldo a favor y en mora
+                    example: 150000.00
+        '400':
+          description: Error en el formato del ID del usuario
+        '404':
+          description: No se encontró el usuario con el ID proporcionado
+
+  /app/usuarios/historial-pagos:
+    get:
+      tags:
+        - app
+      operationId: usuariosHistorialPagos
+      summary: Obtiene el historial de pagos realizados por un residente
+      description: Permite a un residente consultar su historial de pagos, con la opción de filtrar por rango de fechas.
+      parameters:
+        - in: query
+          name: fecha_inicio
+          required: false
+          description: Fecha de inicio del rango de fechas para consultar los pagos
+          schema:
+            type: string
+            format: date
+            example: "2025-01-01"
+        - in: query
+          name: fecha_fin
+          required: false
+          description: Fecha de fin del rango de fechas para consultar los pagos
+          schema:
+            type: string
+            format: date
+            example: "2025-01-31"
+        - in: query
+          name: limit
+          required: false
+          description: Número de pagos a devolver por página (paginación).
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: offset
+          required: false
+          description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Historial de pagos consultado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total:
+                    type: integer
+                    description: Total de pagos realizados por el residente.
+                    example: 15
+                  pagos:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: ID único del pago.
+                          example: 345
+                        monto:
+                          type: number
+                          format: float
+                          description: Monto pagado por el residente.
+                          example: 150000.00
+                        metodo_pago:
+                          type: string
+                          description: Método utilizado para el pago (ej. "Stripe", "Transferencia Bancaria").
+                          example: "Stripe"
+                        fecha_pago:
+                          type: string
+                          format: date-time
+                          description: Fecha y hora en que se realizó el pago.
+                          example: "2025-01-15T14:30:00Z"
+                        factura_id:
+                          type: integer
+                          description: ID de la factura a la que corresponde el pago.
+                          example: 1011
+        '400':
+          description: Error en los parámetros de búsqueda proporcionados
+        '404':
+          description: No se encontraron pagos para el residente con el ID proporcionado
+  /web/conceptos:
+    get:
+      tags:
+        - web
+      operationId: consultarConcepto
+      summary: Obtener todos los conceptos
+      description: Retorna una lista de conceptos con sus valores configurados.
+      responses:
+        '200':
+          description: Lista de conceptos obtenida con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Concepto'
+    post:
+      tags:
+        - web
+      operationId: crearConcepto
+      summary: Crear un nuevo concepto
+      description: Permite al administrador agregar un nuevo concepto con su valor.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Concepto'
+      responses:
+        '201':
+          description: Concepto creado exitosamente
+  /web/conceptos/{id}:
+    put:
+      tags:
+        - web
+      operationId: actualizarConcepto
+      summary: Actualizar un concepto
+      description: Modifica los valores de un concepto existente.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Concepto'
+      responses:
+        '200':
+          description: Concepto actualizado exitosamente
+        '404':
+          description: Concepto no encontrado
+    delete:
+      tags:
+        - web
+      operationId: eliminarConcepto
+      summary: Eliminar un concepto
+      description: Permite eliminar un concepto por su ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Concepto eliminado exitosamente
+        '404':
+          description: Concepto no encontrado
+
 
 components:
   schemas:
@@ -139,6 +702,7 @@ components:
           format: double
           example: 150000
 
+
     ConjuntosRes:
       type: object
       properties:
@@ -149,35 +713,33 @@ components:
         conjuntos:
           type: array
           items:
-            $ref: '#/components/schemas/Conjuntos'
-    Conjuntos:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: ID único del conjunto residencial
-          example: 101
-        nombre:
-          type: string
-          description: Nombre del conjunto residencial
-          example: "Conjunto El Paraíso"
-        ubicacion:
-          type: string
-          description: Ubicación o ciudad del conjunto residencial
-          example: "Bogotá"
-        estado:
-          type: string
-          enum: [ 'activo', 'inactivo' ]
-          description: Estado del conjunto residencial
-          example: "activo"
-        fecha_creacion:
-          type: string
-          format: date-time
-          description: Fecha en que fue creado el conjunto residencial
-          example: "2020-05-15T14:30:00Z"
-        direccion:
-          type: string
-          description: direccion del conjunto residencial
+            type: object
+            properties:
+              id:
+                type: integer
+                description: ID único del conjunto residencial
+                example: 101
+              nombre:
+                type: string
+                description: Nombre del conjunto residencial
+                example: "Conjunto El Paraíso"
+              ubicacion:
+                type: string
+                description: Ubicación o ciudad del conjunto residencial
+                example: "Bogotá"
+              estado:
+                type: string
+                enum: ['activo', 'inactivo']
+                description: Estado del conjunto residencial
+                example: "activo"
+              fecha_creacion:
+                type: string
+                format: date-time
+                description: Fecha en que fue creado el conjunto residencial
+                example: "2020-05-15T14:30:00Z"
+              direccion:
+                type: string
+                description: direccion del conjunto residencial
 
     ResidenteRegistroRequest:
       type: object
