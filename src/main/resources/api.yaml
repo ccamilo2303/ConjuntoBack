@@ -1,0 +1,283 @@
+openapi: 3.0.1
+info:
+  description: Plaid integration
+  version: 1.0.0
+  license:
+    name: Licencia Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
+  termsOfService: 'https://icb.pbank.usa.com/en/privacypolicies'
+  contact:
+    email: support@pibank.usa.com
+    name: Pibank USA
+    url: 'https://icb.pbank.usa.com/en/contact'
+  title: Plaid Service API
+servers:
+  - url: https://#uri/api/1.0.0
+tags:
+  - name: app
+    description: endpoints para las apps
+  - name: web
+    description: endpoints para la web
+paths:
+  /app/conjuntos:
+    get:
+      tags:
+        - app
+      operationId: conjuntos
+      summary: Obtiene un listado de conjuntos residenciales
+      description: Permite consultar un listado de conjuntos residenciales, con posibilidad de filtrar por nombre, ubicación o estado.
+      parameters:
+        - in: query
+          name: nombre
+          required: false
+          description: Nombre del conjunto residencial para realizar una búsqueda.
+          schema:
+            type: string
+            example: "Conjunto El Paraíso"
+        - in: query
+          name: ubicacion
+          required: false
+          description: Ubicación o ciudad del conjunto residencial para realizar una búsqueda.
+          schema:
+            type: string
+            example: "Bogotá"
+        - in: query
+          name: estado
+          required: false
+          description: Estado del conjunto residencial (activo o inactivo) para realizar un filtro.
+          schema:
+            type: string
+            enum: ['activo', 'inactivo']
+            example: "activo"
+        - in: query
+          name: limit
+          required: false
+          description: Número de conjuntos residenciales a devolver por página (paginación).
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: offset
+          required: false
+          description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Listado de conjuntos residenciales consultado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConjuntosRes'
+        '400':
+          description: Error en los parámetros de búsqueda proporcionados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid parameters"
+
+components:
+  schemas:
+    Residente:
+      type: object
+      additionalProperties: false
+      properties:
+        total:
+          type: integer
+          description: Total de solicitudes disponibles
+        solicitudes:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              nombre:
+                type: string
+              email:
+                type: string
+              telefono:
+                type: string
+              tipo:
+                type: string
+                enum: ['propietario', 'arrendatario']
+                description: tipo de residente que solicita registro en la app
+              conjunto:
+                type: number
+                description: id del conjunto
+              interior:
+                type: number
+                description: numero de la torre o interior
+              apto:
+                type: number
+                description: numero del apartamento
+              estado_solicitud:
+                type: string
+                enum: ['pendiente', 'aprobado', 'rechazado']
+              motivo_rechazo:
+                type: string
+                nullable: true
+              fecha_registro:
+                type: string
+                format: date-time
+    Concepto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: "Cuota de administración"
+        valor:
+          type: number
+          format: double
+          example: 150000
+
+    ConjuntosRes:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total de conjuntos residenciales disponibles
+          example: 25
+        conjuntos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Conjuntos'
+    Conjuntos:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único del conjunto residencial
+          example: 101
+        nombre:
+          type: string
+          description: Nombre del conjunto residencial
+          example: "Conjunto El Paraíso"
+        ubicacion:
+          type: string
+          description: Ubicación o ciudad del conjunto residencial
+          example: "Bogotá"
+        estado:
+          type: string
+          enum: [ 'activo', 'inactivo' ]
+          description: Estado del conjunto residencial
+          example: "activo"
+        fecha_creacion:
+          type: string
+          format: date-time
+          description: Fecha en que fue creado el conjunto residencial
+          example: "2020-05-15T14:30:00Z"
+        direccion:
+          type: string
+          description: direccion del conjunto residencial
+
+    ResidenteRegistroRequest:
+      type: object
+      properties:
+        nombre:
+          type: string
+          description: Nombre completo del residente o propietario
+          example: "Juan Pérez"
+        email:
+          type: string
+          format: email
+          description: Correo electrónico del residente o propietario
+          example: "juan.perez@email.com"
+        telefono:
+          type: string
+          description: Número de teléfono de contacto del residente o propietario
+          example: "+573001234567"
+        tipo:
+          type: string
+          enum: ['propietario', 'arrendatario']
+          description: Tipo de residente que solicita registro en la app
+        conjunto:
+          type: number
+          description: ID del conjunto
+        interior:
+          type: number
+          description: Número de la torre o interior
+        apto:
+          type: number
+          description: Número del apartamento
+    ResidenteRegistroResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único de la solicitud de registro
+          example: 123
+        estado_solicitud:
+          type: string
+          enum: ['pendiente']
+          description: Estado inicial de la solicitud
+          example: "pendiente"
+        fecha_registro:
+          type: string
+          format: date-time
+          description: Fecha y hora en que se registró la solicitud
+          example: "2025-01-30T10:00:00Z"
+
+    FacturaResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        total:
+          type: number
+          format: float
+        estado:
+          type: string
+        conceptos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConceptoFactura'
+    ConceptoFactura:
+      type: object
+      properties:
+        concepto:
+          type: string
+          description: Concepto del cobro
+        monto:
+          type: number
+          description: Monto del cobro
+    Aviso:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID único del aviso
+          example: 123
+        titulo:
+          type: string
+          description: Título del aviso
+          example: "Mantenimiento programado"
+        contenido:
+          type: string
+          description: Contenido del aviso
+          example: "Se informa a todos los residentes que el próximo jueves habrá mantenimiento programado..."
+        fecha_publicacion:
+          type: string
+          format: date-time
+          description: Fecha y hora en que se publicó el aviso
+          example: "2025-01-15T10:00:00Z"
+
+    HistorialAvisosResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total de avisos disponibles
+          example: 50
+        avisos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Aviso'
