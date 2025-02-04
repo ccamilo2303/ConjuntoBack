@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+
+    <changeSet id="1" author="ccamilo">
+       <sql>
+           CREATE TABLE "conjuntos" (
+           "id" integer PRIMARY KEY,
+           "nombre" varchar(200),
+           "ubicacion" varchar(200),
+           "estado" varchar(200),
+           "direccion" varchar(200),
+           "fecha_creacion" timestamp
+           );
+
+           CREATE TABLE "residentes" (
+           "id" integer PRIMARY KEY,
+           "nombre" varchar(200),
+           "email" varchar(200),
+           "telefono" integer,
+           "tipo" varchar(200),
+           "conjunto" integer,
+           "interior" integer,
+           "apto" integer,
+           "id_conjunto" integer,
+           "fecha_creacion" timestamp
+           );
+
+           CREATE TABLE "facturas" (
+           "id" integer PRIMARY KEY,
+           "fecha_inicio" timestamp,
+           "fecha_fin" timestamp,
+           "total" integer,
+           "estado" varchar(200),
+           "fecha_creaction" timestamp
+           );
+
+           CREATE TABLE "concepto_factura" (
+           "id" integer PRIMARY KEY,
+           "concepto" varchar(200),
+           "valor" integer,
+           "id_factura" integer,
+           "fecha_creaction" timestamp
+           );
+
+           CREATE TABLE "facturas_residentes" (
+           "id" integer PRIMARY KEY,
+           "id_residente" integer,
+           "id_factura" integer,
+           "estado" varchar(200),
+           "fecha_creacion" timestamp
+           );
+
+           CREATE TABLE "pagos" (
+           "id" integer PRIMARY KEY,
+           "id_residente" integer,
+           "id_factura" integer,
+           "monto" integer,
+           "metodo_pago" varchar(200),
+           "fecha_creacion" timestamp
+           );
+
+           CREATE TABLE "avisos" (
+           "id" integer PRIMARY KEY,
+           "titulo" varchar(200),
+           "contenido" varchar(200),
+           "fecha_creaction" timestamp
+           );
+
+           CREATE TABLE "notificaciones" (
+           "id" integer PRIMARY KEY,
+           "id_residente" integer,
+           "id_aviso" integer
+           );
+
+           ALTER TABLE "residentes" ADD FOREIGN KEY ("id_conjunto") REFERENCES "conjuntos" ("id");
+
+           ALTER TABLE "concepto_factura" ADD FOREIGN KEY ("id_factura") REFERENCES "facturas" ("id");
+
+           ALTER TABLE "facturas_residentes" ADD FOREIGN KEY ("id_factura") REFERENCES "facturas" ("id");
+
+           ALTER TABLE "facturas_residentes" ADD FOREIGN KEY ("id_residente") REFERENCES "residentes" ("id");
+
+           ALTER TABLE "pagos" ADD FOREIGN KEY ("id_factura") REFERENCES "facturas" ("id");
+
+           ALTER TABLE "pagos" ADD FOREIGN KEY ("id_residente") REFERENCES "residentes" ("id");
+
+           ALTER TABLE "notificaciones" ADD FOREIGN KEY ("id_aviso") REFERENCES "avisos" ("id");
+
+           ALTER TABLE "notificaciones" ADD FOREIGN KEY ("id_residente") REFERENCES "residentes" ("id");
+       </sql>
+    </changeSet>
+
+</databaseChangeLog>

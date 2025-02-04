@@ -1,0 +1,21 @@
+server:
+  port: 9090
+logging:
+  level:
+    liquibase: DEBUG
+spring:
+  apllication:
+    name: conjunto
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+  datasource:
+    url: jdbc:postgresql://localhost:5432/conjunto
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+
