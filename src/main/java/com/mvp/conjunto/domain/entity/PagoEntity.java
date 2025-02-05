@@ -11,18 +11,19 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "pagos")
-public class Pago {
+public class PagoEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_residente")
-    private Residente idResidente;
+    private ResidenteEntity idResidente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_factura")
-    private Factura idFactura;
+    private FacturaEntity idFactura;
 
     @Column(name = "monto")
     private Integer monto;

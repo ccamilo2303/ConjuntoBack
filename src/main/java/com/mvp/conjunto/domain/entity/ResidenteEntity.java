@@ -11,8 +11,9 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "residentes")
-public class Residente {
+public class ResidenteEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -25,7 +26,7 @@ public class Residente {
     private String email;
 
     @Column(name = "telefono")
-    private Integer telefono;
+    private String  telefono;
 
     @Size(max = 200)
     @Column(name = "tipo", length = 200)
@@ -42,7 +43,7 @@ public class Residente {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_conjunto")
-    private Conjunto idConjunto;
+    private ConjuntoEntity idConjunto;
 
     @Column(name = "fecha_creacion")
     private Instant fechaCreacion;

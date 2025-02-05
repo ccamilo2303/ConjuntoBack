@@ -1,29 +1,27 @@
 package com.mvp.conjunto.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "facturas")
-public class Factura {
+public class FacturaEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @Column(name = "fecha_inicio")
-    private Instant fechaInicio;
+    private LocalDateTime fechaInicio;
 
     @Column(name = "fecha_fin")
-    private Instant fechaFin;
+    private LocalDateTime fechaFin;
 
     @Column(name = "total")
     private Integer total;
@@ -33,6 +31,6 @@ public class Factura {
     private String estado;
 
     @Column(name = "fecha_creaction")
-    private Instant fechaCreaction;
+    private LocalDateTime fechaCreaction;
 
 }

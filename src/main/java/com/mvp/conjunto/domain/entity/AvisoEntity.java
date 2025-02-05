@@ -10,22 +10,20 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "concepto_factura")
-public class ConceptoFactura {
+@Table(name = "avisos")
+public class AvisoEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @Size(max = 200)
-    @Column(name = "concepto", length = 200)
-    private String concepto;
+    @Column(name = "titulo", length = 200)
+    private String titulo;
 
-    @Column(name = "valor")
-    private Integer valor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_factura")
-    private Factura idFactura;
+    @Size(max = 200)
+    @Column(name = "contenido", length = 200)
+    private String contenido;
 
     @Column(name = "fecha_creaction")
     private Instant fechaCreaction;

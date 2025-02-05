@@ -10,7 +10,7 @@
     <changeSet id="1" author="ccamilo">
        <sql>
            CREATE TABLE "conjuntos" (
-           "id" integer PRIMARY KEY,
+           "id" serial PRIMARY KEY,
            "nombre" varchar(200),
            "ubicacion" varchar(200),
            "estado" varchar(200),
@@ -19,10 +19,10 @@
            );
 
            CREATE TABLE "residentes" (
-           "id" integer PRIMARY KEY,
+           "id" serial PRIMARY KEY,
            "nombre" varchar(200),
            "email" varchar(200),
-           "telefono" integer,
+           "telefono" varchar(200),
            "tipo" varchar(200),
            "conjunto" integer,
            "interior" integer,
@@ -32,7 +32,7 @@
            );
 
            CREATE TABLE "facturas" (
-           "id" integer PRIMARY KEY,
+           "id" serial PRIMARY KEY,
            "fecha_inicio" timestamp,
            "fecha_fin" timestamp,
            "total" integer,
@@ -41,7 +41,7 @@
            );
 
            CREATE TABLE "concepto_factura" (
-           "id" integer PRIMARY KEY,
+           "id" serial PRIMARY KEY,
            "concepto" varchar(200),
            "valor" integer,
            "id_factura" integer,
@@ -49,7 +49,7 @@
            );
 
            CREATE TABLE "facturas_residentes" (
-           "id" integer PRIMARY KEY,
+           "id" serial PRIMARY KEY,
            "id_residente" integer,
            "id_factura" integer,
            "estado" varchar(200),
@@ -57,7 +57,7 @@
            );
 
            CREATE TABLE "pagos" (
-           "id" integer PRIMARY KEY,
+           "id" serial PRIMARY KEY,
            "id_residente" integer,
            "id_factura" integer,
            "monto" integer,
@@ -66,14 +66,14 @@
            );
 
            CREATE TABLE "avisos" (
-           "id" integer PRIMARY KEY,
+           "id" serial PRIMARY KEY,
            "titulo" varchar(200),
            "contenido" varchar(200),
            "fecha_creaction" timestamp
            );
 
            CREATE TABLE "notificaciones" (
-           "id" integer PRIMARY KEY,
+           "id" serial PRIMARY KEY,
            "id_residente" integer,
            "id_aviso" integer
            );

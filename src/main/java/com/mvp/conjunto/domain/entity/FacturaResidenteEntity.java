@@ -1,5 +1,6 @@
 package com.mvp.conjunto.domain.entity;
 
+import com.mvp.conjunto.web.api.model.Residente;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -11,18 +12,19 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "facturas_residentes")
-public class FacturasResidente {
+public class FacturaResidenteEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_residente")
-    private Residente idResidente;
+    private ResidenteEntity idResidente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_factura")
-    private Factura idFactura;
+    private FacturaEntity idFactura;
 
     @Size(max = 200)
     @Column(name = "estado", length = 200)

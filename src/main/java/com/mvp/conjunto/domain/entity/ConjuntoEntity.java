@@ -1,9 +1,6 @@
 package com.mvp.conjunto.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,8 +11,9 @@ import java.time.Instant;
 @Setter
 @Entity
 @Table(name = "conjuntos")
-public class Conjunto {
+public class ConjuntoEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

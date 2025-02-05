@@ -8,17 +8,18 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "notificaciones")
-public class Notificacione {
+public class NotificacionEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_residente")
-    private Residente idResidente;
+    private ResidenteEntity idResidente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_aviso")
-    private Aviso idAviso;
+    private AvisoEntity idAviso;
 
 }
