@@ -10,9 +10,9 @@ spring:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.xml
   datasource:
-    url: jdbc:postgresql://localhost:5432/conjunto
+    url: jdbc:postgresql://roundhouse.proxy.rlwy.net:19272/railway
     username: postgres
-    password: postgres
+    password: mXHOBHpPvlHMbPDJvlxBslajcheLBFHI
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
