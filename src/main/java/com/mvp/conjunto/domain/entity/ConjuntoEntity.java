@@ -1,7 +1,6 @@
 package com.mvp.conjunto.domain.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,20 +16,16 @@ public class ConjuntoEntity {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 200)
-    @Column(name = "nombre", length = 200)
+    @Column(name = "nombre", length = Integer.MAX_VALUE)
     private String nombre;
 
-    @Size(max = 200)
-    @Column(name = "ubicacion", length = 200)
+    @Column(name = "ubicacion", length = Integer.MAX_VALUE)
     private String ubicacion;
 
-    @Size(max = 200)
-    @Column(name = "estado", length = 200)
+    @Column(name = "estado", length = Integer.MAX_VALUE)
     private String estado;
 
-    @Size(max = 200)
-    @Column(name = "direccion", length = 200)
+    @Column(name = "direccion", length = Integer.MAX_VALUE)
     private String direccion;
 
     @Column(name = "fecha_creacion")

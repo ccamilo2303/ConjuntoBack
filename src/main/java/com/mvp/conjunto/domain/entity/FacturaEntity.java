@@ -1,11 +1,12 @@
 package com.mvp.conjunto.domain.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -17,20 +18,29 @@ public class FacturaEntity {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_residente")
+    private ResidenteEntity idResidente;
+
     @Column(name = "fecha_inicio")
-    private LocalDateTime fechaInicio;
+    private Instant fechaInicio;
 
     @Column(name = "fecha_fin")
-    private LocalDateTime fechaFin;
+    private Instant fechaFin;
 
     @Column(name = "total")
     private Integer total;
 
-    @Size(max = 200)
-    @Column(name = "estado", length = 200)
+    @Column(name = "estado", length = Integer.MAX_VALUE)
     private String estado;
 
     @Column(name = "fecha_creaction")
-    private LocalDateTime fechaCreaction;
+    private Instant fechaCreaction;
+
+    @OneToMany(mappedBy = "idFactura")
+    private Set<ConceptoFacturaEntity> conceptoFacturas = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "idFactura")
+    private Set<PagoEntity> pagos = new LinkedHashSet<>();
 
 }

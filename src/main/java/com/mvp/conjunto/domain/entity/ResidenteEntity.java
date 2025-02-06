@@ -1,7 +1,6 @@
 package com.mvp.conjunto.domain.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,23 +12,19 @@ import java.time.Instant;
 @Table(name = "residentes")
 public class ResidenteEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Size(max = 200)
-    @Column(name = "nombre", length = 200)
+    @Column(name = "nombre", length = Integer.MAX_VALUE)
     private String nombre;
 
-    @Size(max = 200)
-    @Column(name = "email", length = 200)
+    @Column(name = "email", length = Integer.MAX_VALUE)
     private String email;
 
-    @Column(name = "telefono")
-    private String  telefono;
+    @Column(name = "telefono", length = Integer.MAX_VALUE)
+    private String telefono;
 
-    @Size(max = 200)
-    @Column(name = "tipo", length = 200)
+    @Column(name = "tipo", length = Integer.MAX_VALUE)
     private String tipo;
 
     @Column(name = "conjunto")
