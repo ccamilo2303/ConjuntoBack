@@ -11,16 +11,20 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "facturas")
-public class FacturaEntity {
+@Table(name = "factura_unidad")
+public class FacturaUnidadEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_residente")
-    private ResidenteEntity idResidente;
+    @JoinColumn(name = "id_unidad")
+    private UnidadEntity idUnidad;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_estado")
+    private EstadoFacturaUnidadEntity idEstado;
 
     @Column(name = "fecha_inicio")
     private Instant fechaInicio;
@@ -31,16 +35,13 @@ public class FacturaEntity {
     @Column(name = "total")
     private Integer total;
 
-    @Column(name = "estado", length = Integer.MAX_VALUE)
-    private String estado;
-
-    @Column(name = "fecha_creaction")
-    private Instant fechaCreaction;
+    @Column(name = "fecha_creacion")
+    private Instant fechaCreacion;
 
     @OneToMany(mappedBy = "idFactura")
     private Set<ConceptoFacturaEntity> conceptoFacturas = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "idFactura")
+    @OneToMany(mappedBy = "idFacturaUnidad")
     private Set<PagoEntity> pagos = new LinkedHashSet<>();
 
 }

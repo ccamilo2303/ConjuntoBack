@@ -1,6 +1,5 @@
 package com.mvp.conjunto.service.impl;
 
-import com.mvp.conjunto.domain.entity.ResidenteEntity;
 import com.mvp.conjunto.domain.repository.*;
 import com.mvp.conjunto.service.AppService;
 import com.mvp.conjunto.web.api.model.*;

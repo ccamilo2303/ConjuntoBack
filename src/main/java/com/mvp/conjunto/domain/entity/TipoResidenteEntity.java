@@ -11,23 +11,20 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "aviso")
-public class AvisoEntity {
+@Table(name = "tipo_residente")
+public class TipoResidenteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "titulo", length = Integer.MAX_VALUE)
-    private String titulo;
-
-    @Column(name = "contenido", length = Integer.MAX_VALUE)
-    private String contenido;
+    @Column(name = "tipo", length = Integer.MAX_VALUE)
+    private String tipo;
 
     @Column(name = "fecha_creacion")
     private Instant fechaCreacion;
 
-    @OneToMany(mappedBy = "idAviso")
-    private Set<NotificacionEntity> notificacions = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "idTipo")
+    private Set<ResidenteEntity> residentes = new LinkedHashSet<>();
 
 }

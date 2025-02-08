@@ -6,29 +6,32 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "concepto_factura")
-public class ConceptoFacturaEntity {
+@Table(name = "concepto")
+public class ConceptoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_factura")
-    private FacturaUnidadEntity idFactura;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_concepto")
-    private ConceptoEntity idConcepto;
+    @Column(name = "nombre", length = Integer.MAX_VALUE)
+    private String nombre;
 
     @Column(name = "valor")
     private BigDecimal valor;
 
     @Column(name = "fecha_creacion")
     private Instant fechaCreacion;
+
+    @OneToMany(mappedBy = "idConcepto")
+    private Set<ConceptoFacturaEntity> conceptoFacturas = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "idConcepto")
+    private Set<UnidadConceptoEntity> unidadConceptos = new LinkedHashSet<>();
 
 }

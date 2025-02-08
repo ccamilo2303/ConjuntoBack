@@ -200,7 +200,13 @@ paths:
               properties:
                 factura_id:
                   type: integer
+                  format: long
                   description: ID de la factura que se está marcando como pagada manualmente
+                  example: 345
+                residente_id:
+                  type: integer
+                  format: long
+                  description: ID del residente de la factura
                   example: 345
                 monto_pagado:
                   type: number

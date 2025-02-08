@@ -8,84 +8,181 @@
 
 
     <changeSet id="1" author="ccamilo">
-       <sql>
-           CREATE TABLE "conjuntos" (
-                                        "id" integer PRIMARY KEY,
-                                        "nombre" varchar,
-                                        "ubicacion" varchar,
-                                        "estado" varchar,
-                                        "direccion" varchar,
-                                        "fecha_creacion" timestamp
-           );
+        <sql>
+            CREATE TABLE "conjunto" (
+            "id" integer PRIMARY KEY,
+            "nombre" varchar,
+            "ubicacion" varchar,
+            "direccion" varchar,
+            "id_estado_conjunto" integer,
+            "fecha_creacion" timestamp
+            );
 
-           CREATE TABLE "residentes" (
-                                         "id" integer PRIMARY KEY,
-                                         "nombre" varchar,
-                                         "email" varchar,
-                                         "telefono" varchar,
-                                         "tipo" varchar,
-                                         "conjunto" integer,
-                                         "interior" integer,
-                                         "apto" integer,
-                                         "id_conjunto" integer,
-                                         "fecha_creacion" timestamp
-           );
+            CREATE TABLE "estado_conjunto" (
+            "id" integer PRIMARY KEY,
+            "estado" varchar,
+            "fecha_creacion" timestamp
+            );
 
-           CREATE TABLE "facturas" (
-                                       "id" integer PRIMARY KEY,
-                                       "id_residente" integer,
-                                       "fecha_inicio" timestamp,
-                                       "fecha_fin" timestamp,
-                                       "total" integer,
-                                       "estado" varchar,
-                                       "fecha_creaction" timestamp
-           );
+            CREATE TABLE "aviso" (
+            "id" integer PRIMARY KEY,
+            "titulo" varchar,
+            "contenido" varchar,
+            "fecha_creacion" timestamp
+            );
 
-           CREATE TABLE "concepto_factura" (
-                                               "id" integer PRIMARY KEY,
-                                               "concepto" varchar,
-                                               "valor" integer,
-                                               "id_factura" integer,
-                                               "fecha_creaction" timestamp
-           );
+            CREATE TABLE "notificacion" (
+            "id" integer PRIMARY KEY,
+            "id_unidad" integer,
+            "id_aviso" integer,
+            "fecha_creacion" timestamp
+            );
 
-           CREATE TABLE "pagos" (
-                                    "id" integer PRIMARY KEY,
-                                    "id_residente" integer,
-                                    "id_factura" integer,
-                                    "monto" integer,
-                                    "metodo_pago" varchar,
-                                    "fecha_creacion" timestamp
-           );
+            CREATE TABLE "residente" (
+            "id" integer PRIMARY KEY,
+            "nombre" varchar,
+            "email" varchar,
+            "telefono" varchar,
+            "id_tipo" integer,
+            "id_conjunto" integer,
+            "id_estado" integer,
+            "fecha_creacion" timestamp
+            );
 
-           CREATE TABLE "avisos" (
-                                     "id" integer PRIMARY KEY,
-                                     "titulo" varchar,
-                                     "contenido" varchar,
-                                     "fecha_creaction" timestamp
-           );
+            CREATE TABLE "tipo_residente" (
+            "id" integer PRIMARY KEY,
+            "tipo" varchar,
+            "fecha_creacion" timestamp
+            );
 
-           CREATE TABLE "notificaciones" (
-                                             "id" integer PRIMARY KEY,
-                                             "id_residente" integer,
-                                             "id_aviso" integer
-           );
+            CREATE TABLE "estado_residente" (
+            "id" integer PRIMARY KEY,
+            "estado" varchar,
+            "fecha_creacion" timestamp
+            );
 
-           ALTER TABLE "residentes" ADD FOREIGN KEY ("id_conjunto") REFERENCES "conjuntos" ("id");
+            CREATE TABLE "solicitud" (
+            "id" integer PRIMARY KEY,
+            "id_residente" integer,
+            "id_estado" integer,
+            "descripcion" varchar,
+            "comentario" varchar,
+            "fecha_creacion" timestamp
+            );
 
-           ALTER TABLE "concepto_factura" ADD FOREIGN KEY ("id_factura") REFERENCES "facturas" ("id");
+            CREATE TABLE "estado_solicitud" (
+            "id" integer PRIMARY KEY,
+            "estado" varchar,
+            "fecha_creacion" timestamp
+            );
 
-           ALTER TABLE "facturas" ADD FOREIGN KEY ("id_residente") REFERENCES "residentes" ("id");
+            CREATE TABLE "unidad" (
+            "id" integer PRIMARY KEY,
+            "interior" integer,
+            "apto" integer,
+            "id_conjunto" integer,
+            "fecha_creacion" timestamp
+            );
 
-           ALTER TABLE "pagos" ADD FOREIGN KEY ("id_factura") REFERENCES "facturas" ("id");
+            CREATE TABLE "residente_unidad" (
+            "id" integer PRIMARY KEY,
+            "id_residente" integer,
+            "id_unidad" integer,
+            "id_estado" integer,
+            "fecha_creacion" timestamp
+            );
 
-           ALTER TABLE "pagos" ADD FOREIGN KEY ("id_residente") REFERENCES "residentes" ("id");
+            CREATE TABLE "estado_residente_unidad" (
+            "id" integer PRIMARY KEY,
+            "estado" varchar,
+            "fecha_creacion" timestamp
+            );
 
-           ALTER TABLE "notificaciones" ADD FOREIGN KEY ("id_aviso") REFERENCES "avisos" ("id");
+            CREATE TABLE "factura_unidad" (
+            "id" integer PRIMARY KEY,
+            "id_unidad" integer,
+            "id_estado" integer,
+            "fecha_inicio" timestamp,
+            "fecha_fin" timestamp,
+            "total" integer,
+            "fecha_creacion" timestamp
+            );
 
-           ALTER TABLE "notificaciones" ADD FOREIGN KEY ("id_residente") REFERENCES "residentes" ("id");
+            CREATE TABLE "estado_factura_unidad" (
+            "id" integer PRIMARY KEY,
+            "estado" varchar,
+            "fecha_creacion" timestamp
+            );
 
-</sql>
+            CREATE TABLE "concepto_factura" (
+            "id" integer PRIMARY KEY,
+            "id_factura" integer,
+            "id_concepto" integer,
+            "valor" decimal,
+            "fecha_creacion" timestamp
+            );
+
+            CREATE TABLE "concepto" (
+            "id" integer PRIMARY KEY,
+            "nombre" varchar,
+            "valor" decimal,
+            "fecha_creacion" timestamp
+            );
+
+            CREATE TABLE "unidad_concepto" (
+            "id" integer PRIMARY KEY,
+            "id_unidad" integer,
+            "id_concepto" integer,
+            "fecha_creacion" timestamp
+            );
+
+            CREATE TABLE "pago" (
+            "id" integer PRIMARY KEY,
+            "id_factura_unidad" integer,
+            "valor" decimal,
+            "metodo_pago" varchar,
+            "fecha_creacion" timestamp
+            );
+
+            ALTER TABLE "conjunto" ADD FOREIGN KEY ("id_estado_conjunto") REFERENCES "estado_conjunto" ("id");
+
+            ALTER TABLE "notificacion" ADD FOREIGN KEY ("id_aviso") REFERENCES "aviso" ("id");
+
+            ALTER TABLE "notificacion" ADD FOREIGN KEY ("id_unidad") REFERENCES "unidad" ("id");
+
+            ALTER TABLE "residente" ADD FOREIGN KEY ("id_tipo") REFERENCES "tipo_residente" ("id");
+
+            ALTER TABLE "residente" ADD FOREIGN KEY ("id_conjunto") REFERENCES "conjunto" ("id");
+
+            ALTER TABLE "residente" ADD FOREIGN KEY ("id_estado") REFERENCES "estado_residente" ("id");
+
+            ALTER TABLE "solicitud" ADD FOREIGN KEY ("id_residente") REFERENCES "residente" ("id");
+
+            ALTER TABLE "solicitud" ADD FOREIGN KEY ("id_estado") REFERENCES "estado_solicitud" ("id");
+
+            ALTER TABLE "unidad" ADD FOREIGN KEY ("id_conjunto") REFERENCES "conjunto" ("id");
+
+            ALTER TABLE "residente_unidad" ADD FOREIGN KEY ("id_residente") REFERENCES "residente" ("id");
+
+            ALTER TABLE "residente_unidad" ADD FOREIGN KEY ("id_unidad") REFERENCES "unidad" ("id");
+
+            ALTER TABLE "residente_unidad" ADD FOREIGN KEY ("id_estado") REFERENCES "estado_residente_unidad" ("id");
+
+            ALTER TABLE "factura_unidad" ADD FOREIGN KEY ("id_unidad") REFERENCES "unidad" ("id");
+
+            ALTER TABLE "factura_unidad" ADD FOREIGN KEY ("id_estado") REFERENCES "estado_factura_unidad" ("id");
+
+            ALTER TABLE "concepto_factura" ADD FOREIGN KEY ("id_factura") REFERENCES "factura_unidad" ("id");
+
+            ALTER TABLE "concepto_factura" ADD FOREIGN KEY ("id_concepto") REFERENCES "concepto" ("id");
+
+            ALTER TABLE "unidad_concepto" ADD FOREIGN KEY ("id_unidad") REFERENCES "unidad" ("id");
+
+            ALTER TABLE "unidad_concepto" ADD FOREIGN KEY ("id_concepto") REFERENCES "concepto" ("id");
+
+            ALTER TABLE "pago" ADD FOREIGN KEY ("id_factura_unidad") REFERENCES "factura_unidad" ("id");
+
+        </sql>
     </changeSet>
 
 </databaseChangeLog>

@@ -9,8 +9,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "notificacion")
-public class NotificacionEntity {
+@Table(name = "unidad_concepto")
+public class UnidadConceptoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -21,8 +21,8 @@ public class NotificacionEntity {
     private UnidadEntity idUnidad;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_aviso")
-    private AvisoEntity idAviso;
+    @JoinColumn(name = "id_concepto")
+    private ConceptoEntity idConcepto;
 
     @Column(name = "fecha_creacion")
     private Instant fechaCreacion;

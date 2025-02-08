@@ -4,12 +4,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "pagos")
+@Table(name = "pago")
 public class PagoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,15 +18,11 @@ public class PagoEntity {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_residente")
-    private ResidenteEntity idResidente;
+    @JoinColumn(name = "id_factura_unidad")
+    private FacturaUnidadEntity idFacturaUnidad;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_factura")
-    private FacturaEntity idFactura;
-
-    @Column(name = "monto")
-    private Integer monto;
+    @Column(name = "valor")
+    private BigDecimal valor;
 
     @Column(name = "metodo_pago", length = Integer.MAX_VALUE)
     private String metodoPago;
