@@ -2,6 +2,8 @@ package com.mvp.conjunto.service.impl;
 
 import com.mvp.conjunto.domain.entity.ResidenteEntity;
 import com.mvp.conjunto.domain.entity.ResidenteUnidadEntity;
+import com.mvp.conjunto.domain.entity.SolicitudEntity;
+import com.mvp.conjunto.domain.entity.UnidadEntity;
 import com.mvp.conjunto.domain.repository.*;
 import com.mvp.conjunto.service.AppService;
 import com.mvp.conjunto.web.api.model.*;
@@ -10,16 +12,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class AppServiceImpl implements AppService {
+
     private final TipoResidenteRepository tipoResidenteRepository;
 
     private final ConjuntoRepository conjuntoRepository;
@@ -28,6 +31,11 @@ public class AppServiceImpl implements AppService {
     private final PagoRepository pagoRepository;
     private final AvisoRepository avisoRepository;
     private final UnidadRepository unidadRepository;
+    private final EstadoResidenteRepository estadoResidenteRepository;
+    private final SolicitudRepository solicitudRepository;
+    private final EstadoSolicitudRepository estadoSolicitudRepository;
+    private final ResidenteUnidadRepository residenteUnidadRepository;
+    private final EstadoResidenteUnidadRepository estadoResidenteUnidadRepository;
 
     @Override
     public List<FacturaResponse> residentesFacturas() {
@@ -53,30 +61,51 @@ public class AppServiceImpl implements AppService {
     @Override
     public ResidenteRegistroResponse residentesRegistro(ResidenteRegistroRequest residenteRegistroRequest) {
 
+
         residenteRepository.findByEmail(residenteRegistroRequest.getEmail()).ifPresent(residente -> {
             throw new RuntimeException("El email ya se encuentra registrado");
         });
 
         ResidenteEntity residente = new ResidenteEntity();
-        residente.setNombre(residenteRegistroRequest.getNombre());
-        residente.setEmail(residenteRegistroRequest.getEmail());
+
         residente.setIdConjunto(conjuntoRepository.findById(residenteRegistroRequest.getConjunto().longValue())
                 .orElseThrow(() -> new RuntimeException("Conjunto no encontrado")));
+
+        Optional<UnidadEntity> unidad =  unidadRepository.findByInteriorAndAptoAndIdConjunto(residenteRegistroRequest.getInterior().intValue(), residenteRegistroRequest.getApto().intValue(), residente.getIdConjunto());
+        unidad.orElseThrow(() -> new RuntimeException("Unidad no encontrada"));
+
         residente.setIdTipo(tipoResidenteRepository.findByTipo(residenteRegistroRequest.getTipo().getValue()).orElseThrow(() -> new RuntimeException("Tipo de residente no encontrado")));
 
-        unidadRepository.findByInteriorAndAptoAndIdConjunto(residenteRegistroRequest.getInterior().intValue(), residenteRegistroRequest.getApto().intValue(), residente.getIdConjunto()).ifPresent(unidad -> {
-            ResidenteUnidadEntity residenteUnidad = new ResidenteUnidadEntity();
-            residenteUnidad.setIdResidente(residente);
-            residenteUnidad.setIdUnidad(unidad);
-            residenteUnidad.setFechaCreacion(Instant.now());
-            residente.getResidenteUnidads().add(residenteUnidad);
-        });
+        residente.setNombre(residenteRegistroRequest.getNombre());
+        residente.setEmail(residenteRegistroRequest.getEmail());
+        residente.setTelefono(residenteRegistroRequest.getTelefono());
+        residente.setIdEstado(estadoResidenteRepository.findById(2L).get());
+
+
+        ResidenteUnidadEntity residenteUnidad = new ResidenteUnidadEntity();
+        residenteUnidad.setIdResidente(residente);
+        residenteUnidad.setIdUnidad(unidad.get());
+        residenteUnidad.setFechaCreacion(Instant.now());
+        residenteUnidad.setIdEstado(estadoResidenteUnidadRepository.findById(2L).get());
+        residente.getResidenteUnidads().add(residenteUnidad);
 
         residente.setFechaCreacion(Instant.now());
 
         Integer id = residenteRepository.save(residente).getId();
         ResidenteRegistroResponse residenteRegistroResponse = new ResidenteRegistroResponse();
         residenteRegistroResponse.setId(id);
+
+        residenteUnidadRepository.save(residenteUnidad);
+
+        SolicitudEntity solicitudEntity = new SolicitudEntity();
+        solicitudEntity.setIdResidente(residente);
+        solicitudEntity.setComentario("Registro de residente");
+        solicitudEntity.setDescripcion("Pendiente");
+        solicitudEntity.setFechaCreacion(Instant.now());
+        solicitudEntity.setIdEstado(estadoSolicitudRepository.findById(1L).get());
+
+        solicitudRepository.save(solicitudEntity);
+
         return residenteRegistroResponse;
     }
 
@@ -101,18 +130,28 @@ public class AppServiceImpl implements AppService {
     @Override
     public UsuariosHistorialPagos200Response usuariosHistorialPagos(LocalDate fechaInicio, LocalDate fechaFin, Integer limit, Integer offset) {
         UsuariosHistorialPagos200Response usuariosHistorialPagos200Response = new UsuariosHistorialPagos200Response();
-        pagoRepository.findByIdResidente(1L).ifPresent(pagos -> {
-            usuariosHistorialPagos200Response.setTotal(pagos.size());
-            usuariosHistorialPagos200Response.setPagos(pagos.stream().map(pago -> {
-                UsuariosHistorialPagos200ResponsePagosInner usuariosHistorialPagos200ResponsePagosInner = new UsuariosHistorialPagos200ResponsePagosInner();
-                usuariosHistorialPagos200ResponsePagosInner.setId(pago.getId());
-                usuariosHistorialPagos200ResponsePagosInner.setMonto(pago.getValor().floatValue());
-                usuariosHistorialPagos200ResponsePagosInner.setMetodoPago(pago.getMetodoPago());
-                //usuariosHistorialPagos200ResponsePagosInner.setFechaPago(pago.getFechaCreacion());
-                usuariosHistorialPagos200ResponsePagosInner.setFacturaId(pago.getIdFacturaUnidad().getId());
-                return usuariosHistorialPagos200ResponsePagosInner;
-            }).toList());
+
+        residenteRepository.findById(1L).ifPresent(residente -> {
+            residente.getResidenteUnidads()
+                    .stream()
+                    .forEach(x -> {
+                        x.getIdUnidad().getFacturaUnidads().stream().forEach(factura -> {
+                            pagoRepository.findByIdFacturaUnidad(factura).ifPresent(pagos -> {
+                                usuariosHistorialPagos200Response.setTotal(pagos.size());
+                                usuariosHistorialPagos200Response.setPagos(pagos.stream().map(pago -> {
+                                    UsuariosHistorialPagos200ResponsePagosInner usuariosHistorialPagos200ResponsePagosInner = new UsuariosHistorialPagos200ResponsePagosInner();
+                                    usuariosHistorialPagos200ResponsePagosInner.setId(pago.getId());
+                                    usuariosHistorialPagos200ResponsePagosInner.setMonto(pago.getValor().floatValue());
+                                    usuariosHistorialPagos200ResponsePagosInner.setMetodoPago(pago.getMetodoPago());
+                                    //usuariosHistorialPagos200ResponsePagosInner.setFechaPago(pago.getFechaCreacion());
+                                    usuariosHistorialPagos200ResponsePagosInner.setFacturaId(pago.getIdFacturaUnidad().getId());
+                                    return usuariosHistorialPagos200ResponsePagosInner;
+                                }).toList());
+                            });
+                        });
+                    });
         });
+
         return usuariosHistorialPagos200Response;
     }
 

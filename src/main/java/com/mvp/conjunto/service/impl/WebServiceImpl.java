@@ -37,11 +37,13 @@ public class WebServiceImpl implements WebService {
             solicitud.forEach(solicitudEntity -> {
                 ResidenteEntity residente = solicitudEntity.getIdResidente();
 
+
                 ResidenteSolicitudesInner residenteSolicitudesInner = new ResidenteSolicitudesInner();
                 residenteSolicitudesInner.setNombre(residente.getNombre());
                 residenteSolicitudesInner.setEmail(residente.getEmail());
                 residenteSolicitudesInner.setTelefono(residente.getTelefono());
                 residenteSolicitudesInner.setEstadoSolicitud(ResidenteSolicitudesInner.EstadoSolicitudEnum.fromValue(solicitudEntity.getIdEstado().getEstado()));
+                residenteSolicitudesInner.setApto(residente.get);
                 restes.add(residenteSolicitudesInner);
             });
         });

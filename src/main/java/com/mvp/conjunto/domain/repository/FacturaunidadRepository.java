@@ -15,14 +15,16 @@ public interface FacturaunidadRepository extends JpaRepository<FacturaUnidadEnti
 
     @Query(nativeQuery = true, value = """
             select r.nombre, r.id,
-            case when (sum(f.total) - sum(p.monto)) = 0 then 'Al dia' when sum(f.total) - sum(p.monto) > 0 then 'Saldo pendiente' else 'Saldo a favor' end "estado",
-            case when (sum(f.total) - sum(p.monto)) < 0 then (sum(f.total) - sum(p.monto)) else 0 end "saldoFavor",
-            case when (sum(f.total) - sum(p.monto)) > 0 then (sum(f.total) - sum(p.monto)) else 0 end "saldoMora"
-            from facturas f
-            left join pagos p
-            on f.id = p.id_factura
-            left join residentes r
-            on f.id_residente  = r.id
+            case when (sum(f.total) - sum(p.valor)) = 0 then 'Al dia' when sum(f.total) - sum(p.valor) > 0 then 'Saldo pendiente' else 'Saldo a favor' end "estado",
+            case when (sum(f.total) - sum(p.valor)) < 0 then (sum(f.total) - sum(p.valor)) else 0 end "saldoFavor",
+            case when (sum(f.total) - sum(p.valor)) > 0 then (sum(f.total) - sum(p.valor)) else 0 end "saldoMora"
+            from factura_unidad f
+            left join pago p
+            on f.id = p.id_factura_unidad\s
+            left join residente_unidad ru\s
+            on ru.id_unidad = f.id_unidad\s
+            left join residente r\s
+            on r.id = ru.id_residente\s
             where r.id = :idUsuario
             group by r.nombre , r.id """)
     Optional<List<ResumenSaldoModel>> resumenSaldo(@Param("idUsuario") Long idUsuario);
