@@ -57,11 +57,13 @@ public class WebController implements WebApi {
 
     @Override
     public ResponseEntity<Void> crearConcepto(Concepto concepto) {
+        webService.crearConcepto(concepto);
         return ResponseEntity.ok().build();
     }
 
     @Override
     public ResponseEntity<Void> actualizarConcepto(Integer id, Concepto concepto) {
+        webService.actualizarConcepto(id, concepto);
         return ResponseEntity.ok().build();
     }
 

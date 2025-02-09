@@ -438,7 +438,7 @@ paths:
               properties:
                 aviso_id:
                   type: integer
-                residente_id:
+                unidad_id:
                   type: integer
                 tipo:
                   type: string
@@ -768,7 +768,7 @@ components:
           enum: ['propietario', 'arrendatario']
           description: Tipo de residente que solicita registro en la app
         conjunto:
-          type: number
+          type: integer
           description: ID del conjunto
         interior:
           type: number

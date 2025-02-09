@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+
+    <changeSet id="2" author="ccamilo">
+        <sql>
+            insert into estado_conjunto (id, estado, fecha_creacion) values(1, 'activo', now());
+            insert into estado_conjunto (id, estado, fecha_creacion) values(2, 'inactivo', now());
+
+            insert into estado_factura_unidad (id, estado, fecha_creacion) values(1, 'Pendiente Pago', now());
+            insert into estado_factura_unidad (id, estado, fecha_creacion) values(2, 'Pago realizado', now());
+
+            insert into estado_residente (id, estado, fecha_creacion) values(1, 'activo', now());
+            insert into estado_residente (id, estado, fecha_creacion) values(2, 'inactivo', now());
+
+            insert into estado_residente_unidad (id, estado, fecha_creacion) values(1, 'activo', now());
+            insert into estado_residente_unidad (id, estado, fecha_creacion) values(2, 'inactivo', now());
+
+            insert into estado_solicitud (id, estado, fecha_creacion) values(1, 'pendiente', now());
+            insert into estado_solicitud (id, estado, fecha_creacion) values(2, 'en gestion', now());
+            insert into estado_solicitud (id, estado, fecha_creacion) values(3, 'cerrado', now());
+
+            insert into tipo_residente (id, tipo, fecha_creacion) values(1, 'propietario', now());
+            insert into tipo_residente (id, tipo, fecha_creacion) values(2, 'arrendatario', now());
+
+            insert into conjunto(id, nombre, ubicacion,direccion, id_estado_conjunto, fecha_creacion) values(1, 'Daila', 'Ciudad Verde', 'Carrera 31 17 99', 1, now());
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

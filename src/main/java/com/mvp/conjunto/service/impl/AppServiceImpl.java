@@ -1,5 +1,7 @@
 package com.mvp.conjunto.service.impl;
 
+import com.mvp.conjunto.domain.entity.ResidenteEntity;
+import com.mvp.conjunto.domain.entity.ResidenteUnidadEntity;
 import com.mvp.conjunto.domain.repository.*;
 import com.mvp.conjunto.service.AppService;
 import com.mvp.conjunto.web.api.model.*;
@@ -18,26 +20,28 @@ import java.util.List;
 @Service
 @Slf4j
 public class AppServiceImpl implements AppService {
+    private final TipoResidenteRepository tipoResidenteRepository;
 
     private final ConjuntoRepository conjuntoRepository;
     private final ResidenteRepository residenteRepository;
-    private final FacturaRepository facturaRepository;
+    private final FacturaunidadRepository facturaunidadRepository;
     private final PagoRepository pagoRepository;
     private final AvisoRepository avisoRepository;
+    private final UnidadRepository unidadRepository;
 
     @Override
     public List<FacturaResponse> residentesFacturas() {
         List<FacturaResponse> res = new ArrayList<>();
         log.info("Obteniendo facturas de residentes");
-        facturaRepository.findAll().forEach(factura -> {
+        facturaunidadRepository.findAll().forEach(factura -> {
             FacturaResponse facturaResponse = new FacturaResponse();
             facturaResponse.setId(factura.getId());
             facturaResponse.setTotal(factura.getTotal().floatValue());
-            facturaResponse.setEstado(factura.getEstado());
+            facturaResponse.setEstado(factura.getIdEstado().getEstado());
             facturaResponse.setConceptos(factura.getConceptoFacturas().stream().map(conceptoFactura -> {
                 ConceptoFactura facturaResponseConceptosInner = new ConceptoFactura();
-                facturaResponseConceptosInner.setConcepto(conceptoFactura.getConcepto());
-                facturaResponseConceptosInner.setMonto(BigDecimal.valueOf(conceptoFactura.getValor()));
+                facturaResponseConceptosInner.setConcepto(conceptoFactura.getIdConcepto().getNombre());
+                facturaResponseConceptosInner.setMonto(conceptoFactura.getValor());
                 return facturaResponseConceptosInner;
             }).toList());
 
@@ -56,11 +60,18 @@ public class AppServiceImpl implements AppService {
         ResidenteEntity residente = new ResidenteEntity();
         residente.setNombre(residenteRegistroRequest.getNombre());
         residente.setEmail(residenteRegistroRequest.getEmail());
-        //residente.setTelefono(residenteRegistroRequest.getTelefono());
-        residente.setConjunto(residente.getConjunto());
-        residente.setApto(residenteRegistroRequest.getApto().intValue());
-        residente.setInterior(residenteRegistroRequest.getInterior().intValue());
-        residente.setTipo(residenteRegistroRequest.getTipo().getValue());
+        residente.setIdConjunto(conjuntoRepository.findById(residenteRegistroRequest.getConjunto().longValue())
+                .orElseThrow(() -> new RuntimeException("Conjunto no encontrado")));
+        residente.setIdTipo(tipoResidenteRepository.findByTipo(residenteRegistroRequest.getTipo().getValue()).orElseThrow(() -> new RuntimeException("Tipo de residente no encontrado")));
+
+        unidadRepository.findByInteriorAndAptoAndIdConjunto(residenteRegistroRequest.getInterior().intValue(), residenteRegistroRequest.getApto().intValue(), residente.getIdConjunto()).ifPresent(unidad -> {
+            ResidenteUnidadEntity residenteUnidad = new ResidenteUnidadEntity();
+            residenteUnidad.setIdResidente(residente);
+            residenteUnidad.setIdUnidad(unidad);
+            residenteUnidad.setFechaCreacion(Instant.now());
+            residente.getResidenteUnidads().add(residenteUnidad);
+        });
+
         residente.setFechaCreacion(Instant.now());
 
         Integer id = residenteRepository.save(residente).getId();
@@ -72,7 +83,9 @@ public class AppServiceImpl implements AppService {
     @Override
     public UsuariosEstadoCuenta200Response usuariosEstadoCuenta() {
         UsuariosEstadoCuenta200Response usuariosEstadoCuenta200Response = new UsuariosEstadoCuenta200Response();
-        facturaRepository.resumenSaldo(1L).ifPresent(resumenSaldoModels -> {
+
+
+        facturaunidadRepository.resumenSaldo(1L).ifPresent(resumenSaldoModels -> {
             resumenSaldoModels.forEach(resumenSaldoModel -> {
                 usuariosEstadoCuenta200Response.setUsuarioId(resumenSaldoModel.getId());
                 usuariosEstadoCuenta200Response.setNombre(resumenSaldoModel.getNombre());
@@ -93,10 +106,10 @@ public class AppServiceImpl implements AppService {
             usuariosHistorialPagos200Response.setPagos(pagos.stream().map(pago -> {
                 UsuariosHistorialPagos200ResponsePagosInner usuariosHistorialPagos200ResponsePagosInner = new UsuariosHistorialPagos200ResponsePagosInner();
                 usuariosHistorialPagos200ResponsePagosInner.setId(pago.getId());
-                usuariosHistorialPagos200ResponsePagosInner.setMonto(pago.getMonto().floatValue());
+                usuariosHistorialPagos200ResponsePagosInner.setMonto(pago.getValor().floatValue());
                 usuariosHistorialPagos200ResponsePagosInner.setMetodoPago(pago.getMetodoPago());
                 //usuariosHistorialPagos200ResponsePagosInner.setFechaPago(pago.getFechaCreacion());
-                usuariosHistorialPagos200ResponsePagosInner.setFacturaId(pago.getIdFactura().getId());
+                usuariosHistorialPagos200ResponsePagosInner.setFacturaId(pago.getIdFacturaUnidad().getId());
                 return usuariosHistorialPagos200ResponsePagosInner;
             }).toList());
         });
@@ -128,7 +141,7 @@ public class AppServiceImpl implements AppService {
             conjuntosResConjuntosInner.setId(conjunto.getId());
             conjuntosResConjuntosInner.setNombre(conjunto.getNombre());
             conjuntosResConjuntosInner.setUbicacion(conjunto.getUbicacion());
-            //conjuntosResConjuntosInner.setEstado(conjunto.getEstado());
+            conjuntosResConjuntosInner.setEstado(ConjuntosResConjuntosInner.EstadoEnum.fromValue(conjunto.getIdEstadoConjunto().getEstado()));
             //conjuntosResConjuntosInner.setFechaCreacion(conjunto.getFechaCreacion());
             return conjuntosResConjuntosInner;
         }).toList());

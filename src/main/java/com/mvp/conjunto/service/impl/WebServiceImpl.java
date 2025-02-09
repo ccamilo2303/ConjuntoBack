@@ -1,5 +1,6 @@
 package com.mvp.conjunto.service.impl;
 
+import com.mvp.conjunto.domain.entity.*;
 import com.mvp.conjunto.domain.repository.*;
 import com.mvp.conjunto.service.WebService;
 import com.mvp.conjunto.web.api.model.*;
@@ -18,27 +19,34 @@ public class WebServiceImpl implements WebService {
 
     private final ResidenteRepository residenteRepository;
     private final PagoRepository pagoRepository;
-    private final FacturaRepository facturaRepository;
+    private final FacturaunidadRepository facturaunidadRepository;
     private final AvisoRepository avisoRepository;
     private final NotificacionRepository notificacionRepository;
-    //private final ConceptoRepository conceptoRepository;
+    private final EstadoResidenteRepository estadoResidenteRepository;
+    private final UnidadRepository unidadRepository;
+    private final ConceptoRepository conceptoRepository;
+    private final SolicitudRepository solicitudRepository;
+    private final EstadoSolicitudRepository estadoSolicitudRepository;
 
     @Override
     public Residente residentes(String estadoSolicitud, Integer limit, Integer offset) {
 
         Residente res = new Residente();
         List<ResidenteSolicitudesInner> restes = new ArrayList<>();
+        solicitudRepository.findByIdEstado(estadoSolicitudRepository.findByEstado(estadoSolicitud)).ifPresent(solicitud -> {
+            solicitud.forEach(solicitudEntity -> {
+                ResidenteEntity residente = solicitudEntity.getIdResidente();
 
-        residenteRepository.findByEstadoSolicitud(estadoSolicitud).ifPresent(residente -> {
-            residente.forEach(residenteEntity -> {
                 ResidenteSolicitudesInner residenteSolicitudesInner = new ResidenteSolicitudesInner();
-                residenteSolicitudesInner.setNombre(residenteEntity.getNombre());
-                residenteSolicitudesInner.setEmail(residenteEntity.getEmail());
-                residenteSolicitudesInner.setTelefono(residenteEntity.getTelefono());
-                residenteSolicitudesInner.setEstadoSolicitud(ResidenteSolicitudesInner.EstadoSolicitudEnum.fromValue(residenteEntity.getEstadoSolicitud()));
+                residenteSolicitudesInner.setNombre(residente.getNombre());
+                residenteSolicitudesInner.setEmail(residente.getEmail());
+                residenteSolicitudesInner.setTelefono(residente.getTelefono());
+                residenteSolicitudesInner.setEstadoSolicitud(ResidenteSolicitudesInner.EstadoSolicitudEnum.fromValue(solicitudEntity.getIdEstado().getEstado()));
                 restes.add(residenteSolicitudesInner);
             });
         });
+
+
         res.setSolicitudes(restes);
         return res;
     }
@@ -49,8 +57,14 @@ public class WebServiceImpl implements WebService {
     public void residentesIdEstado(Long id, ResidentesIdEstadoRequest residentesIdEstadoRequest){
 
         residenteRepository.findById(id).ifPresent(residente -> {
-            residente.setEstadoSolicitud(residentesIdEstadoRequest.getEstadoSolicitud().getValue());
-            residenteRepository.save(residente);
+
+            estadoResidenteRepository.findById(Long.valueOf(residentesIdEstadoRequest.getEstadoSolicitud().getValue()))
+                    .ifPresent(estadoResidenteEntity -> {
+                residente.setIdEstado(estadoResidenteEntity);
+                residenteRepository.save(residente);
+            });
+
+
         });
 
     }
@@ -61,10 +75,10 @@ public class WebServiceImpl implements WebService {
         PagoEntity pago = new PagoEntity();
 
         pago.setMetodoPago(pagoManualRequest.getMetodoPago().getValue());
-        pago.setMonto(BigDecimal.valueOf(pagoManualRequest.getMontoPagado()));
+        pago.setValor(BigDecimal.valueOf(pagoManualRequest.getMontoPagado()));
         pago.setFechaCreacion(Instant.now());
-        pago.setIdFactura(facturaRepository.findById(pagoManualRequest.getFacturaId().longValue()).get());
-        pago.setIdResidente(residenteRepository.findById(pagoManualRequest.getResidenteId().longValue()).get());
+        pago.setIdFacturaUnidad(facturaunidadRepository.findById(pagoManualRequest.getFacturaId().longValue()).get());
+
 
         pagoRepository.save(pago);
 
@@ -82,7 +96,7 @@ public class WebServiceImpl implements WebService {
         AvisoEntity aviso = new AvisoEntity();
         aviso.setTitulo(avisosRequest.getTitulo());
         aviso.setContenido(avisosRequest.getContenido());
-        aviso.setFechaCreaction(Instant.now());
+        aviso.setFechaCreacion(Instant.now());
         avisoRepository.save(aviso);
     }
 
@@ -93,7 +107,7 @@ public class WebServiceImpl implements WebService {
 
         NotificacionEntity notificaciones = new NotificacionEntity();
         notificaciones.setIdAviso(avisoRepository.findById(notificacionesRequest.getAvisoId().longValue()).get());
-        notificaciones.setIdResidente(residenteRepository.findById(notificacionesRequest.getResidenteId().longValue()).get());
+        notificaciones.setIdUnidad(unidadRepository.findById(notificacionesRequest.getUnidadId().longValue()).get());
         notificaciones.setFechaCreacion(Instant.now());
 
         notificacionRepository.save(notificaciones);
@@ -102,15 +116,33 @@ public class WebServiceImpl implements WebService {
 
     public List<Concepto> consultarConcepto(){
         List<Concepto> conceptos = new ArrayList<>();
-        /*conceptoRepository.findAll().forEach(conceptoEntity -> {
+        conceptoRepository.findAll().forEach(conceptoEntity -> {
             Concepto concepto = new Concepto();
             concepto.setId(conceptoEntity.getId());
             concepto.setNombre(conceptoEntity.getNombre());
-            concepto.setDescripcion(conceptoEntity.getDescripcion());
-            concepto.setValor(conceptoEntity.getValor().floatValue());
+            concepto.setValor(conceptoEntity.getValor().doubleValue());
             conceptos.add(concepto);
-        });*/
+        });
         return conceptos;
+    }
+
+    @Override
+    @Transactional
+    public void crearConcepto(Concepto concepto){
+        ConceptoEntity conceptoEntity = new ConceptoEntity();
+        conceptoEntity.setNombre(concepto.getNombre());
+        conceptoEntity.setValor(BigDecimal.valueOf(concepto.getValor()));
+        conceptoRepository.save(conceptoEntity);
+    }
+
+    @Override
+    @Transactional
+    public void actualizarConcepto(Integer id, Concepto concepto){
+        conceptoRepository.findById(id.longValue()).ifPresent(conceptoEntity -> {
+            conceptoEntity.setNombre(concepto.getNombre());
+            conceptoEntity.setValor(BigDecimal.valueOf(concepto.getValor()));
+            conceptoRepository.save(conceptoEntity);
+        });
     }
 
 

@@ -10,7 +10,7 @@
     <changeSet id="1" author="ccamilo">
         <sql>
             CREATE TABLE "conjunto" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "nombre" varchar,
             "ubicacion" varchar,
             "direccion" varchar,
@@ -19,27 +19,27 @@
             );
 
             CREATE TABLE "estado_conjunto" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "estado" varchar,
             "fecha_creacion" timestamp
             );
 
             CREATE TABLE "aviso" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "titulo" varchar,
             "contenido" varchar,
             "fecha_creacion" timestamp
             );
 
             CREATE TABLE "notificacion" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "id_unidad" integer,
             "id_aviso" integer,
             "fecha_creacion" timestamp
             );
 
             CREATE TABLE "residente" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "nombre" varchar,
             "email" varchar,
             "telefono" varchar,
@@ -50,19 +50,19 @@
             );
 
             CREATE TABLE "tipo_residente" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "tipo" varchar,
             "fecha_creacion" timestamp
             );
 
             CREATE TABLE "estado_residente" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "estado" varchar,
             "fecha_creacion" timestamp
             );
 
             CREATE TABLE "solicitud" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "id_residente" integer,
             "id_estado" integer,
             "descripcion" varchar,
@@ -71,13 +71,13 @@
             );
 
             CREATE TABLE "estado_solicitud" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "estado" varchar,
             "fecha_creacion" timestamp
             );
 
             CREATE TABLE "unidad" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "interior" integer,
             "apto" integer,
             "id_conjunto" integer,
@@ -85,7 +85,7 @@
             );
 
             CREATE TABLE "residente_unidad" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "id_residente" integer,
             "id_unidad" integer,
             "id_estado" integer,
@@ -93,13 +93,13 @@
             );
 
             CREATE TABLE "estado_residente_unidad" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "estado" varchar,
             "fecha_creacion" timestamp
             );
 
             CREATE TABLE "factura_unidad" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "id_unidad" integer,
             "id_estado" integer,
             "fecha_inicio" timestamp,
@@ -109,13 +109,13 @@
             );
 
             CREATE TABLE "estado_factura_unidad" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "estado" varchar,
             "fecha_creacion" timestamp
             );
 
             CREATE TABLE "concepto_factura" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "id_factura" integer,
             "id_concepto" integer,
             "valor" decimal,
@@ -123,21 +123,21 @@
             );
 
             CREATE TABLE "concepto" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "nombre" varchar,
             "valor" decimal,
             "fecha_creacion" timestamp
             );
 
             CREATE TABLE "unidad_concepto" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "id_unidad" integer,
             "id_concepto" integer,
             "fecha_creacion" timestamp
             );
 
             CREATE TABLE "pago" (
-            "id" integer PRIMARY KEY,
+            "id" serial PRIMARY KEY,
             "id_factura_unidad" integer,
             "valor" decimal,
             "metodo_pago" varchar,

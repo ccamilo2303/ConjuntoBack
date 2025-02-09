@@ -15,4 +15,7 @@ public interface WebService {
     void avisos(AvisosRequest avisosRequest);
     void notificaciones(NotificacionesRequest notificacionesRequest);
     List<Concepto> consultarConcepto();
+    void crearConcepto(Concepto concepto);
+    void actualizarConcepto(Integer id, Concepto concepto);
+
 }

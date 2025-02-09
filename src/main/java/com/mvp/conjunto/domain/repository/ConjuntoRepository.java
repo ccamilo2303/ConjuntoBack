@@ -1,5 +1,6 @@
 package com.mvp.conjunto.domain.repository;
 
+import com.mvp.conjunto.domain.entity.ConjuntoEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
