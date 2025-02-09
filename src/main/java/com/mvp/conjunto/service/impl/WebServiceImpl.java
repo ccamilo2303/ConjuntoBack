@@ -43,7 +43,7 @@ public class WebServiceImpl implements WebService {
                 residenteSolicitudesInner.setEmail(residente.getEmail());
                 residenteSolicitudesInner.setTelefono(residente.getTelefono());
                 residenteSolicitudesInner.setEstadoSolicitud(ResidenteSolicitudesInner.EstadoSolicitudEnum.fromValue(solicitudEntity.getIdEstado().getEstado()));
-                residenteSolicitudesInner.setApto(residente.get);
+
                 restes.add(residenteSolicitudesInner);
             });
         });
