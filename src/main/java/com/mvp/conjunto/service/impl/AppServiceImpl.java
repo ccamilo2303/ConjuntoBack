@@ -1,5 +1,6 @@
 package com.mvp.conjunto.service.impl;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.mvp.conjunto.domain.entity.ResidenteEntity;
 import com.mvp.conjunto.domain.entity.ResidenteUnidadEntity;
 import com.mvp.conjunto.domain.entity.SolicitudEntity;
@@ -36,6 +37,10 @@ public class AppServiceImpl implements AppService {
     private final EstadoSolicitudRepository estadoSolicitudRepository;
     private final ResidenteUnidadRepository residenteUnidadRepository;
     private final EstadoResidenteUnidadRepository estadoResidenteUnidadRepository;
+
+    private final AuthService authService;
+
+
 
     @Override
     public List<FacturaResponse> residentesFacturas() {
@@ -173,6 +178,11 @@ public class AppServiceImpl implements AppService {
 
     @Override
     public ConjuntosRes conjuntos(String nombre, String ubicacion, String estado, Integer limit, Integer offset) {
+        log.info("Info del usuario: {}", authService.getCurrentUserUid());
+
+
+
+
         Pageable pageable = Pageable.ofSize(limit).withPage(offset);
         ConjuntosRes res = new ConjuntosRes();
         res.setConjuntos(conjuntoRepository.findAll(pageable).stream().map(conjunto -> {

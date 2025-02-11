@@ -1,6 +1,7 @@
 package com.mvp.conjunto.web.rest;
 
 import com.mvp.conjunto.service.AppService;
+import com.mvp.conjunto.service.impl.AuthService;
 import com.mvp.conjunto.web.api.AppApi;
 import com.mvp.conjunto.web.api.model.*;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 public class AppController implements AppApi {
 
     private final AppService appService;
+
 
     @Override
     public ResponseEntity<List<FacturaResponse>> residentesFacturas() {
