@@ -13,6 +13,14 @@ tags:
     description: endpoints para las apps
   - name: web
     description: endpoints para la web
+  - name: web-solicitudes
+    description: endpoints para la web
+  - name: web-residentes
+    description: endpoints para la web
+  - name: web-unidades
+    description: endpoints para la web
+  - name: web-cuenta-cobro
+    description: endpoints para la web
 paths:
   /app/conjuntos:
     get:
@@ -95,30 +103,30 @@ paths:
         '409':
           description: Ya existe una solicitud con ese correo electrónico
 
-  /web/residentes:
+  /web/solicitudes:
     get:
       tags:
-        - web
-      operationId: residentes
+        - web-solicitudes
+      operationId: salicitudes
       summary: Obtiene una lista de las solicitudes de registro de residentes
       description: Permite al administrador consultar todas las solicitudes de registro, incluyendo su estado (pendiente, aprobado, rechazado).
       parameters:
         - in: query
-          name: estado_solicitud
+          name: estadoSolicitud
           required: false
-          description: Filtra las solicitudes por estado. Puede ser 'pendiente', 'aprobado', o 'rechazado'.
+          description: Filtra las solicitudes por estado. Puede ser '1=pendiente', '2=en gestion', o '33=rechazado'.
           schema:
-            type: string
-            enum: ['pendiente', 'aprobado', 'rechazado']
+            type: integer
+            enum: [1, 2, 3]
         - in: query
-          name: limit
+          name: page
           required: false
           description: Número de registros a devolver por página (paginación).
           schema:
             type: integer
             default: 10
         - in: query
-          name: offset
+          name: size
           required: false
           description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
           schema:
@@ -130,17 +138,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Residente"
+                $ref: "#/components/schemas/Solicitud"
         '400':
           description: Parámetros de solicitud inválidos
         '404':
           description: No se encontraron solicitudes
 
-  /web/residentes/{id}/estado:
+  /web/solicitud/{id}/estado:
     put:
       tags:
-        - web
-      operationId: residentesIdEstado
+        - web-solicitudes
+      operationId: solicitudEstado
       summary: Aprobar o rechazar solicitud de residente
       parameters:
         - in: path
@@ -155,10 +163,10 @@ paths:
             schema:
               type: object
               properties:
-                estado_solicitud:
-                  type: string
-                  enum: ['aprobado', 'rechazado']
-                motivo_rechazo:
+                estadoSolicitud:
+                  type: integer
+                  enum: [1, 2, 3]
+                motivoRechazo:
                   type: string
                   nullable: true
       responses:
@@ -166,6 +174,350 @@ paths:
           description: Estado de la solicitud actualizado
         '400':
           description: Error al actualizar el estado
+  /web/residentes:
+    get:
+      tags:
+        - web-residentes
+      operationId: residentes
+      summary: Obtiene una lista de los residentes del conjunto
+      description: Permite al administrador consultar todas las solicitudes de registro, incluyendo su estado (pendiente, aprobado, rechazado).
+      parameters:
+        - in: query
+          name: page
+          required: false
+          description: Número de registros a devolver por página (paginación).
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: size
+          required: false
+          description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Lista de solicitudes de registro de residentes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Residentes"
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+
+  /web/residente/{id}/estado:
+    put:
+      tags:
+        - web-residentes
+      operationId: residenteEstado
+      summary: Cambiar estado del residente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del residente
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idEstado:
+                  type: integer
+      responses:
+        '200':
+          description: Estado de la solicitud actualizado
+        '400':
+          description: Error al actualizar el estado
+
+  /web/residente/{id}/tipo:
+    put:
+      tags:
+        - web-residentes
+      operationId: residenteTipo
+      summary: Cambiar tipo del residente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: ID del residente
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idTipo:
+                  type: integer
+      responses:
+        '200':
+          description: Estado de la solicitud actualizado
+        '400':
+          description: Error al actualizar el estado
+
+
+
+  /web/residente/{idResidente}/unidad:
+    get:
+      tags:
+        - web-residentes
+      operationId: residenteUnidad
+      summary: Obtiene una lista con las unidades relacionadas al cliente
+      parameters:
+        - name: idResidente
+          in: path
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: page
+          required: false
+          description: Número de registros a devolver por página (paginación).
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: size
+          required: false
+          description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Lista de unidades del residente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResidenteUnidad"
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+
+  /web/unidades:
+    get:
+      tags:
+        - web-unidades
+      operationId: unidades
+      summary: Obtiene una lista de todas las unidades
+      parameters:
+        - in: query
+          name: page
+          required: false
+          description: Número de registros a devolver por página (paginación).
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: size
+          required: false
+          description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Lista de unidades del residente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnidadesConjunto"
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+  /web/unidad/{idUnidad}/residentes:
+    get:
+      tags:
+        - web-unidades
+      operationId: unidadResidentes
+      summary: Obtiene una lista de todos los residentes asociados a una unidad
+      parameters:
+        - name: idUnidad
+          in: path
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: page
+          required: false
+          description: Número de registros a devolver por página (paginación).
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: size
+          required: false
+          description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Lista de unidades del residente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResidentesUnidad"
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+
+
+  /web/unidad/{idUnidad}/conceptos:
+    get:
+      tags:
+        - web-unidades
+      operationId: unidadeConceptos
+      summary: Obtiene una lista de todos los conceptos asociados a una unidad
+      parameters:
+        - name: idUnidad
+          in: path
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: page
+          required: false
+          description: Número de registros a devolver por página (paginación).
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: size
+          required: false
+          description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Lista de unidades del residente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnidadConceptos"
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+
+  /web/unidad/{idUnidad}/cuentas-cobro:
+    get:
+      tags:
+        - web-unidades
+      operationId: unidadCuentasCobro
+      summary: Obtiene una lista de todos las cuentas de cobro asociadas a la unidad
+      parameters:
+        - name: idUnidad
+          in: path
+          required: true
+          schema:
+            type: integer
+        - in: query
+          name: page
+          required: false
+          description: Número de registros a devolver por página (paginación).
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: size
+          required: false
+          description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Lista de unidades del residente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UnidadCuentasCobro"
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+  /web/unidad/{idUnidad}/concepto/{idConcepto}:
+    put:
+      tags:
+        - web-unidades
+      operationId: unidadConcepto
+      summary: Asocia un concepto con la unidad
+      parameters:
+        - name: idUnidad
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: idConcepto
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de unidades del residente
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+  /web/unidad/{idUnidad}/residente/{idResidente}:
+    put:
+      tags:
+        - web-unidades
+      operationId: unidadResidente
+      summary: Asocia un residente con la unidad
+      parameters:
+        - name: idUnidad
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: idResidente
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de unidades del residente
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+
+  /web/unidad/{idResidenteUnidad}:
+    delete:
+      tags:
+        - web-unidades
+      operationId: eliminaUnidadResidente
+      summary: Elimina la relación de unidad con residente
+      parameters:
+        - name: idResidenteUnidad
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de unidades del residente
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+
+
   /app/residentes/facturas:
     get:
       tags:
@@ -185,10 +537,98 @@ paths:
         '404':
           description: Residente no encontrado
 
-  /web/pagos/manual:
+
+
+
+  /web/cuenta-cobro:
     post:
       tags:
-        - web
+        - web-cuenta-cobro
+      operationId: crearCuentaCobro
+      summary: Registra cuentas de cobro para todas las unidades
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrarCuentaCobro'
+      responses:
+        '200':
+          description: Lista de unidades del residente
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+    get:
+      tags:
+        - web-cuenta-cobro
+      operationId: CuentaCobro
+      summary: Consulta todas las cuentas de cobro
+      parameters:
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: size
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: idUnidad
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: estado
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: fechaInicio
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: fechaFin
+          in: query
+          required: false
+          schema:
+            type: string
+
+      responses:
+        '200':
+          description: Lista de unidades del residente
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CuentasCobro"
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+  /web/cuenta-cobro/unidad:
+    post:
+      tags:
+        - web-cuenta-cobro
+      operationId: cuentaCobroUnidad
+      summary: Registra una cuenta de cobro para una unidad
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistrarCuentaCobroUnidad'
+      responses:
+        '200':
+          description: Lista de unidades del residente
+        '400':
+          description: Parámetros de solicitud inválidos
+        '404':
+          description: No se encontraron solicitudes
+
+  /web/cuenta-cobro/pagos/manual:
+    post:
+      tags:
+        - web-cuenta-cobro
       operationId: pagoManual
       summary: Marca un pago manual realizado por un residente (por transferencia, efectivo, etc.)
       description: Permite al administrador registrar un pago manual para una factura (por ejemplo, pagos realizados por transferencia o en efectivo).
@@ -196,33 +636,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                factura_id:
-                  type: integer
-                  format: long
-                  description: ID de la factura que se está marcando como pagada manualmente
-                  example: 345
-                residente_id:
-                  type: integer
-                  format: long
-                  description: ID del residente de la factura
-                  example: 345
-                monto_pagado:
-                  type: number
-                  format: float
-                  description: Monto total pagado
-                  example: 150000.00
-                metodo_pago:
-                  type: string
-                  enum: ['transferencia', 'efectivo']
-                  description: Método de pago utilizado (puede ser transferencia bancaria o efectivo)
-                  example: "transferencia"
-                fecha_pago:
-                  type: string
-                  format: date-time
-                  description: Fecha en la que se realizó el pago
-                  example: "2025-01-30T14:30:00Z"
+              $ref: '#/components/schemas/PagoManual'
       responses:
         '200':
           description: Pago manual registrado correctamente
@@ -259,98 +673,6 @@ paths:
         '404':
           description: Factura no encontrada
 
-  /web/reportes/pagos-morosos:
-    get:
-      tags:
-        - web
-      operationId: pagosMorosos
-      summary: Obtiene un reporte de pagos realizados y morosos en un rango de fechas
-      description: Permite al administrador obtener un reporte de pagos realizados y de residentes morosos dentro de un rango de fechas específico.
-      parameters:
-        - in: query
-          name: fecha_inicio
-          required: true
-          description: Fecha de inicio del rango
-          schema:
-            type: string
-            format: date
-            example: "2025-01-01"
-        - in: query
-          name: fecha_fin
-          required: true
-          description: Fecha de fin del rango
-          schema:
-            type: string
-            format: date
-            example: "2025-01-31"
-      responses:
-        '200':
-          description: Reporte de pagos y morosos generado con éxito
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  total_pagado:
-                    type: number
-                    format: float
-                    description: Total de pagos realizados en el rango de fechas
-                    example: 500000.00
-                  total_morosidad:
-                    type: number
-                    format: float
-                    description: Total de pagos pendientes de residentes morosos
-                    example: 200000.00
-                  pagos_realizados:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        residente_id:
-                          type: integer
-                          description: ID del residente que realizó el pago
-                          example: 101
-                        nombre_residente:
-                          type: string
-                          description: Nombre del residente
-                          example: "Juan Pérez"
-                        monto_pagado:
-                          type: number
-                          format: float
-                          description: Monto pagado por el residente
-                          example: 150000.00
-                        fecha_pago:
-                          type: string
-                          format: date-time
-                          description: Fecha en que se realizó el pago
-                          example: "2025-01-15T14:30:00Z"
-                  morosos:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        residente_id:
-                          type: integer
-                          description: ID del residente moroso
-                          example: 102
-                        nombre_residente:
-                          type: string
-                          description: Nombre del residente moroso
-                          example: "Ana Gómez"
-                        monto_pendiente:
-                          type: number
-                          format: float
-                          description: Monto pendiente de pago
-                          example: 200000.00
-                        fecha_vencimiento:
-                          type: string
-                          format: date
-                          description: Fecha de vencimiento de la factura pendiente
-                          example: "2025-01-10"
-        '400':
-          description: Error en los parámetros de fechas proporcionados
-        '404':
-          description: No se encontraron pagos ni morosos en el rango de fechas proporcionado
 
   /web/avisos:
     post:
@@ -579,7 +901,7 @@ paths:
   /web/conceptos:
     get:
       tags:
-        - web
+        - web-conceptos
       operationId: consultarConcepto
       summary: Obtener todos los conceptos
       description: Retorna una lista de conceptos con sus valores configurados.
@@ -589,12 +911,10 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Concepto'
+                $ref: '#/components/schemas/Conceptos'
     post:
       tags:
-        - web
+        - web-conceptos
       operationId: crearConcepto
       summary: Crear un nuevo concepto
       description: Permite al administrador agregar un nuevo concepto con su valor.
@@ -603,14 +923,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Concepto'
+              $ref: '#/components/schemas/ConceptoCrear'
       responses:
         '201':
           description: Concepto creado exitosamente
   /web/conceptos/{id}:
     put:
       tags:
-        - web
+        - web-conceptos
       operationId: actualizarConcepto
       summary: Actualizar un concepto
       description: Modifica los valores de un concepto existente.
@@ -625,7 +945,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Concepto'
+              $ref: '#/components/schemas/ConceptoCrear'
       responses:
         '200':
           description: Concepto actualizado exitosamente
@@ -633,7 +953,7 @@ paths:
           description: Concepto no encontrado
     delete:
       tags:
-        - web
+        - web-conceptos
       operationId: eliminarConcepto
       summary: Eliminar un concepto
       description: Permite eliminar un concepto por su ID.
@@ -652,54 +972,44 @@ paths:
 
 components:
   schemas:
-    Residente:
+    Residentes:
       type: object
-      additionalProperties: false
       properties:
-        total:
-          type: integer
-          description: Total de solicitudes disponibles
-        solicitudes:
+        residentes:
           type: array
           items:
             type: object
-            properties:
-              id:
-                type: integer
-              nombre:
-                type: string
-              email:
-                type: string
-              telefono:
-                type: string
-              tipo:
-                type: string
-                enum: ['propietario', 'arrendatario']
-                description: tipo de residente que solicita registro en la app
-              conjunto:
-                type: number
-                description: id del conjunto
-              interior:
-                type: number
-                description: numero de la torre o interior
-              apto:
-                type: number
-                description: numero del apartamento
-              estado_solicitud:
-                type: string
-                enum: ['pendiente', 'aprobado', 'rechazado']
-              motivo_rechazo:
-                type: string
-                nullable: true
-              fecha_registro:
-                type: string
-                format: date-time
+            $ref: '#/components/schemas/Residente'
+        pages:
+          type: object
+          $ref: '#/components/schemas/Pages'
+
+    Conceptos:
+      type: object
+      properties:
+        conceptos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Concepto'
+
     Concepto:
       type: object
       properties:
         id:
           type: integer
           example: 1
+        nombre:
+          type: string
+          example: "Cuota de administración"
+        valor:
+          type: number
+          format: double
+          example: 150000
+        fechaRegistro:
+          type: integer
+    ConceptoCrear:
+      type: object
+      properties:
         nombre:
           type: string
           example: "Cuota de administración"
@@ -849,3 +1159,194 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Aviso'
+    Solicitud:
+      type: object
+      properties:
+        solicitudes:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              nombre:
+                type: string
+              email:
+                type: string
+              telefono:
+                type: string
+              tipo:
+                type: string
+              estado:
+                type: string
+              descripcion:
+                type: string
+              comentario:
+                type: string
+              fechaCreacion:
+                type: string
+        pages:
+          type: object
+          $ref: '#/components/schemas/Pages'
+    ResidenteUnidad:
+      type: object
+      properties:
+        unidades:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/Unidad'
+        pages:
+          type: object
+          $ref: '#/components/schemas/Pages'
+    Unidad:
+      type: object
+      properties:
+        id:
+          type: integer
+        interior:
+          type: integer
+        conjunto:
+          type: string
+        estado:
+          type: string
+
+    UnidadesConjunto:
+      type: object
+      properties:
+        unidades:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/Unidad'
+        pages:
+          type: object
+          $ref: '#/components/schemas/Pages'
+
+    ResidentesUnidad:
+      type: object
+      properties:
+        residentes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Residente'
+
+    Residente:
+      type: object
+      properties:
+        idResidenteUnidad:
+          type: number
+        nombre:
+          type: string
+        email:
+          type: string
+        telefono:
+          type: string
+        tipo:
+          type: string
+        estado:
+          type: string
+        fechaRegistro:
+          type: number
+
+    UnidadConceptos:
+      type: object
+      properties:
+        conceptos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Concepto'
+
+    UnidadCuentasCobro:
+      type: object
+      properties:
+        cuentasCobro:
+          type: array
+          items:
+            $ref: '#/components/schemas/CuentaCobro'
+        pages:
+          type: object
+          $ref: '#/components/schemas/Pages'
+
+    CuentasCobro:
+      type: object
+      properties:
+        cuentasCobro:
+          type: array
+          items:
+            $ref: '#/components/schemas/CuentaCobro'
+        pages:
+          type: object
+          $ref: '#/components/schemas/Pages'
+
+
+    CuentaCobro:
+      type: object
+      properties:
+        id:
+          type: number
+        estado:
+          type: string
+        fechaInicio:
+          type: number
+        fechaFin:
+          type: number
+        total:
+          type: number
+        conceptos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Concepto'
+        fechaRegistro:
+          type: number
+        unidad:
+          type: object
+          $ref: '#/components/schemas/Unidad'
+
+    RegistrarCuentaCobro:
+      type: object
+      properties:
+        fechaInicio:
+          type: number
+        fechaFin:
+          type: number
+
+    RegistrarCuentaCobroUnidad:
+      type: object
+      properties:
+        fechaInicio:
+          type: number
+        fechaFin:
+          type: number
+        idConcepto:
+          type: number
+        idUnidad:
+          type: number
+    PagoManual:
+      type: object
+      properties:
+        idCuenta:
+          type: number
+        montoPagado:
+          type: number
+          format: float
+          description: Monto total pagado
+          example: 150000.00
+        metodoPago:
+          type: string
+          enum: ['transferencia', 'efectivo']
+          description: Método de pago utilizado (puede ser transferencia bancaria o efectivo)
+          example: "transferencia"
+        fechaPago:
+          type: integer
+          description: Fecha en la que se realizó el pago
+
+    Pages:
+      type: object
+      properties:
+        size:
+          type: number
+        page:
+          type: number
+        nextPage:
+          type: number

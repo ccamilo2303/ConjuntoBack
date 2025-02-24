@@ -17,7 +17,7 @@ import java.util.List;
 public class WebController implements WebApi {
 
     private final WebService webService;
-
+/*
 
     @Override
     public ResponseEntity<Residente> residentes(String estadoSolicitud, Integer limit, Integer offset) {
@@ -76,6 +76,6 @@ public class WebController implements WebApi {
     public ResponseEntity<PagosMorosos200Response> pagosMorosos(LocalDate fechaInicio, LocalDate fechaFin) {
         return WebApi.super.pagosMorosos(fechaInicio, fechaFin);
     }
-
+*/
 
 }

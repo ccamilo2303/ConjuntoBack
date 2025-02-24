@@ -49,7 +49,7 @@ public class WebServiceImpl implements WebService {
         });
 
 
-        res.setSolicitudes(restes);
+        //res.setSolicitudes(restes);
         return res;
     }
 
