@@ -1,21 +1,11 @@
 package com.mvp.conjunto.service.impl;
 
-import com.mvp.conjunto.domain.entity.*;
-import com.mvp.conjunto.domain.repository.*;
-import com.mvp.conjunto.service.WebService;
-import com.mvp.conjunto.web.api.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class WebServiceImpl implements WebService {
+public class WebServiceImpl{ /*implements WebService {
 
     private final ResidenteRepository residenteRepository;
     private final PagoRepository pagoRepository;
@@ -146,6 +136,6 @@ public class WebServiceImpl implements WebService {
             conceptoRepository.save(conceptoEntity);
         });
     }
-
+*/
 
 }

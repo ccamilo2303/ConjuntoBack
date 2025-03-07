@@ -107,10 +107,16 @@ paths:
     get:
       tags:
         - web-solicitudes
-      operationId: salicitudes
+      operationId: solicitudes
       summary: Obtiene una lista de las solicitudes de registro de residentes
       description: Permite al administrador consultar todas las solicitudes de registro, incluyendo su estado (pendiente, aprobado, rechazado).
       parameters:
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
         - in: query
           name: estadoSolicitud
           required: false
@@ -132,6 +138,7 @@ paths:
           schema:
             type: integer
             default: 0
+
       responses:
         '200':
           description: Lista de solicitudes de registro de residentes
@@ -157,6 +164,12 @@ paths:
           description: ID del residente
           schema:
             type: integer
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -196,6 +209,12 @@ paths:
           schema:
             type: integer
             default: 0
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de solicitudes de registro de residentes
@@ -221,6 +240,12 @@ paths:
           description: ID del residente
           schema:
             type: integer
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -248,6 +273,12 @@ paths:
           description: ID del residente
           schema:
             type: integer
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -290,6 +321,12 @@ paths:
           schema:
             type: integer
             default: 0
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de unidades del residente
@@ -323,6 +360,12 @@ paths:
           schema:
             type: integer
             default: 0
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de unidades del residente
@@ -360,6 +403,12 @@ paths:
           schema:
             type: integer
             default: 0
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de unidades del residente
@@ -399,6 +448,12 @@ paths:
           schema:
             type: integer
             default: 0
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de unidades del residente
@@ -437,6 +492,12 @@ paths:
           schema:
             type: integer
             default: 0
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de unidades del residente
@@ -465,6 +526,12 @@ paths:
           required: true
           schema:
             type: integer
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de unidades del residente
@@ -489,6 +556,12 @@ paths:
           required: true
           schema:
             type: integer
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de unidades del residente
@@ -509,6 +582,12 @@ paths:
           required: true
           schema:
             type: integer
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de unidades del residente
@@ -546,6 +625,13 @@ paths:
         - web-cuenta-cobro
       operationId: crearCuentaCobro
       summary: Registra cuentas de cobro para todas las unidades
+      parameters:
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -612,6 +698,13 @@ paths:
         - web-cuenta-cobro
       operationId: cuentaCobroUnidad
       summary: Registra una cuenta de cobro para una unidad
+      parameters:
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -632,6 +725,13 @@ paths:
       operationId: pagoManual
       summary: Marca un pago manual realizado por un residente (por transferencia, efectivo, etc.)
       description: Permite al administrador registrar un pago manual para una factura (por ejemplo, pagos realizados por transferencia o en efectivo).
+      parameters:
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -680,6 +780,13 @@ paths:
         - web
       operationId: avisos
       summary: Publicar un aviso para todos los residentes
+      parameters:
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -704,6 +811,12 @@ paths:
       summary: Obtiene el historial de avisos enviados a los residentes
       description: Permite a los residentes consultar el historial de avisos publicados por el administrador en un rango de fechas específico.
       parameters:
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
         - in: query
           name: fecha_inicio
           required: false
@@ -752,6 +865,13 @@ paths:
         - web
       operationId: notificaciones
       summary: Enviar notificación de aviso a los residentes
+      parameters:
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -905,6 +1025,13 @@ paths:
       operationId: consultarConcepto
       summary: Obtener todos los conceptos
       description: Retorna una lista de conceptos con sus valores configurados.
+      parameters:
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       responses:
         '200':
           description: Lista de conceptos obtenida con éxito
@@ -935,6 +1062,12 @@ paths:
       summary: Actualizar un concepto
       description: Modifica los valores de un concepto existente.
       parameters:
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -968,6 +1101,24 @@ paths:
           description: Concepto eliminado exitosamente
         '404':
           description: Concepto no encontrado
+
+
+  /web/conjuntos:
+    get:
+      tags:
+        - web-conjuntos
+      operationId: conjuntosDisponibles
+      summary: Conjuntos disponibles para el admin/residente
+      responses:
+        '200':
+          description: Lista de conceptos obtenida con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConjuntosRes'
+        '404':
+          description: Error interno
+
 
 
 components:
@@ -1205,6 +1356,8 @@ components:
         id:
           type: integer
         interior:
+          type: integer
+        apto:
           type: integer
         conjunto:
           type: string

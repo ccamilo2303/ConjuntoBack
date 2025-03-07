@@ -1,10 +1,10 @@
 package com.mvp.conjunto.domain.repository;
 
-import com.mvp.conjunto.domain.entity.NotificacionEntity;
+import com.mvp.conjunto.domain.entity.Notificacion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
 @Repository
-public interface NotificacionRepository extends JpaRepository<NotificacionEntity, Long> {
-
-}
+public interface NotificacionRepository extends JpaRepository<Notificacion, UUID> {
+  }

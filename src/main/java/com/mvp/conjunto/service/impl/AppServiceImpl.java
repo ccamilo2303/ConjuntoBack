@@ -1,28 +1,13 @@
 package com.mvp.conjunto.service.impl;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.mvp.conjunto.domain.entity.ResidenteEntity;
-import com.mvp.conjunto.domain.entity.ResidenteUnidadEntity;
-import com.mvp.conjunto.domain.entity.SolicitudEntity;
-import com.mvp.conjunto.domain.entity.UnidadEntity;
-import com.mvp.conjunto.domain.repository.*;
-import com.mvp.conjunto.service.AppService;
-import com.mvp.conjunto.web.api.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class AppServiceImpl implements AppService {
+public class AppServiceImpl{ /*implements AppService {
 
     private final TipoResidenteRepository tipoResidenteRepository;
 
@@ -198,5 +183,5 @@ public class AppServiceImpl implements AppService {
         res.setTotal(res.getConjuntos().size());
 
         return res;
-    }
+    }*/
 }
