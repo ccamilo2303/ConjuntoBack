@@ -9,13 +9,13 @@ import java.util.List;
 
 public interface WebService {
 
-    Residente residentes(String estadoSolicitud, Integer limit, Integer offset);
+    /*Residente residentes(String estadoSolicitud, Integer limit, Integer offset);
     void residentesIdEstado(Long id, ResidentesIdEstadoRequest residentesIdEstadoRequest);
     PagoManual200Response pagoManual(PagoManualRequest pagoManualRequest);
     void avisos(AvisosRequest avisosRequest);
     void notificaciones(NotificacionesRequest notificacionesRequest);
     List<Concepto> consultarConcepto();
     void crearConcepto(Concepto concepto);
-    void actualizarConcepto(Integer id, Concepto concepto);
+    void actualizarConcepto(Integer id, Concepto concepto);*/
 
 }

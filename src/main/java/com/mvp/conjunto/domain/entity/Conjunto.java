@@ -1,5 +1,6 @@
 package com.mvp.conjunto.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "conjunto")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Conjunto {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -39,12 +41,15 @@ public class Conjunto {
     private Instant fechaActualizacion;
 
     @OneToMany(mappedBy = "idConjunto")
+    private Set<AdministradorConjunto> administradorConjuntos = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "idConjunto")
+    private Set<ResidenteConjunto> residenteConjuntos = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "idConjunto")
     private Set<SolicitudRegistro> solicitudRegistros = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idConjunto")
     private Set<Unidad> unidads = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "idConjunto")
-    private Set<UsuarioConjunto> usuarioConjuntos = new LinkedHashSet<>();
 
 }

@@ -1,14 +1,14 @@
 package com.mvp.conjunto.service.impl;
-
+/*
 import com.google.firebase.auth.FirebaseAuth;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Service;*/
 
-@Service
+//@Service
 public class AuthService {
 
-    public String getCurrentUserUid() {
+ /*   public String getCurrentUserUid() {
         try {
             Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (principal instanceof User) {
@@ -21,5 +21,5 @@ public class AuthService {
             return null;
 
         }
-    }
+    }*/
 }

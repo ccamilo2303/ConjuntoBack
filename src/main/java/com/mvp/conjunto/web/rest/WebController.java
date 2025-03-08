@@ -16,8 +16,8 @@ import java.util.List;
 @RestController
 public class WebController implements WebApi {
 
-    private final WebService webService;
-/*
+/*    private final WebService webService;
+
 
     @Override
     public ResponseEntity<Residente> residentes(String estadoSolicitud, Integer limit, Integer offset) {

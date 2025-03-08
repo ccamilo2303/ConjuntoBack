@@ -1,5 +1,6 @@
 package com.mvp.conjunto.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "residente")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Residente {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -34,6 +36,9 @@ public class Residente {
     @Column(name = "id_estado")
     private UUID idEstado;
 
+    @Column(name = "id_firebase", length = Integer.MAX_VALUE)
+    private String idFirebase;
+
     @Column(name = "fecha_creacion")
     private Instant fechaCreacion;
 
@@ -41,12 +46,12 @@ public class Residente {
     private Instant fechaActualizacion;
 
     @OneToMany(mappedBy = "idResidente")
+    private Set<ResidenteConjunto> residenteConjuntos = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "idResidente")
     private Set<ResidenteUnidad> residenteUnidads = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idResidente")
     private Set<SolicitudRegistro> solicitudRegistros = new LinkedHashSet<>();
-
-    @OneToOne(mappedBy = "idResidente")
-    private UsuarioResidente usuarioResidente;
 
 }

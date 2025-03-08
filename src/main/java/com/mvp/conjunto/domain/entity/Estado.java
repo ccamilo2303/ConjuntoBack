@@ -1,5 +1,6 @@
 package com.mvp.conjunto.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,14 +14,12 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "estado")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Estado {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     private UUID id;
-
-    @Column(name = "categoria", length = Integer.MAX_VALUE)
-    private String categoria;
 
     @Column(name = "nombre", length = Integer.MAX_VALUE)
     private String nombre;
@@ -35,10 +34,16 @@ public class Estado {
     private Set<Administrador> administradors = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idEstado")
+    private Set<AdministradorConjunto> administradorConjuntos = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "idEstado")
     private Set<Conjunto> conjuntos = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idEstado")
     private Set<CuentaCobroUnidad> cuentaCobroUnidads = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "idEstado")
+    private Set<ResidenteConjunto> residenteConjuntos = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idEstado")
     private Set<ResidenteUnidad> residenteUnidads = new LinkedHashSet<>();
@@ -51,8 +56,5 @@ public class Estado {
 
     @OneToMany(mappedBy = "idEstado")
     private Set<UnidadParqueadero> unidadParqueaderos = new LinkedHashSet<>();
-
-    @OneToMany(mappedBy = "idEstado")
-    private Set<Usuario> usuarios = new LinkedHashSet<>();
 
 }

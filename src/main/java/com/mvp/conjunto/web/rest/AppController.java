@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class AppController implements AppApi {
-
+/*
     private final AppService appService;
 
 
@@ -36,15 +36,15 @@ public class AppController implements AppApi {
     @Override
     public ResponseEntity<UsuariosHistorialPagos200Response> usuariosHistorialPagos(LocalDate fechaInicio, LocalDate fechaFin, Integer limit, Integer offset) {
         return ResponseEntity.ok(appService.usuariosHistorialPagos(fechaInicio, fechaFin, limit, offset));
-    }
+    }*/
 /*
     @Override
     public ResponseEntity<HistorialAvisosResponse> avisosHistorial(LocalDate fechaInicio, LocalDate fechaFin, Integer limit, Integer offset) {
         return ResponseEntity.ok(appService.avisosHistorial(fechaInicio, fechaFin, limit, offset));
     }*/
 
-    @Override
+    /*@Override
     public ResponseEntity<ConjuntosRes> conjuntos(String nombre, String ubicacion, String estado, Integer limit, Integer offset) {
         return ResponseEntity.ok(appService.conjuntos(nombre, ubicacion, estado, limit, offset));
-    }
+    }*/
 }

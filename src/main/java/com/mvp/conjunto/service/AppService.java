@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface AppService {
 
-
+/*
     public List<FacturaResponse> residentesFacturas();
 
 
@@ -24,5 +24,5 @@ public interface AppService {
     public HistorialAvisosResponse avisosHistorial(LocalDate fechaInicio, LocalDate fechaFin, Integer limit, Integer offset) ;
 
 
-    public ConjuntosRes conjuntos(String nombre, String ubicacion, String estado, Integer limit, Integer offset);
+    public ConjuntosRes conjuntos(String nombre, String ubicacion, String estado, Integer limit, Integer offset);*/
 }

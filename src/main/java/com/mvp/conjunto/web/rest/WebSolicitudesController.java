@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class WebSolicitudesController implements WebSolicitudesApi {
-
+/*
     private final WebSolicitudesService webSolicitudesService;
 
     @Override
@@ -38,5 +38,5 @@ public class WebSolicitudesController implements WebSolicitudesApi {
         return ResponseEntity.ok().build();
 
     }
-
+*/
 }
