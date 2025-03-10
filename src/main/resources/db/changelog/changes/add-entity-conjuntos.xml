@@ -9,179 +9,254 @@
 
     <changeSet id="1" author="ccamilo">
         <sql>
-            CREATE TABLE "conjunto" (
-            "id" serial PRIMARY KEY,
+            CREATE TABLE "estado" (
+            "id" UUID PRIMARY KEY,
             "nombre" varchar,
-            "ubicacion" varchar,
-            "direccion" varchar,
-            "id_estado_conjunto" integer,
-            "fecha_creacion" timestamp
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
-            CREATE TABLE "estado_conjunto" (
-            "id" serial PRIMARY KEY,
-            "estado" varchar,
-            "fecha_creacion" timestamp
+            CREATE TABLE "residente_conjunto" (
+            "id" UUID PRIMARY KEY,
+            "id_residente" UUID,
+            "id_conjunto" UUID,
+            "id_estado" UUID,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
+            );
+
+            CREATE TABLE "conjunto" (
+            "id" UUID PRIMARY KEY,
+            "nombre" varchar,
+            "ciudad" varchar,
+            "direccion" varchar,
+            "id_estado" UUID,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
             CREATE TABLE "aviso" (
-            "id" serial PRIMARY KEY,
+            "id" UUID PRIMARY KEY,
             "titulo" varchar,
             "contenido" varchar,
-            "fecha_creacion" timestamp
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
             CREATE TABLE "notificacion" (
-            "id" serial PRIMARY KEY,
-            "id_unidad" integer,
-            "id_aviso" integer,
-            "fecha_creacion" timestamp
+            "id" UUID PRIMARY KEY,
+            "id_unidad" UUID,
+            "id_aviso" UUID,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
             CREATE TABLE "residente" (
-            "id" serial PRIMARY KEY,
+            "id" UUID PRIMARY KEY,
             "nombre" varchar,
             "email" varchar,
             "telefono" varchar,
-            "id_tipo" integer,
-            "id_conjunto" integer,
-            "id_estado" integer,
-            "fecha_creacion" timestamp
+            "id_tipo" UUID,
+            "id_estado" UUID,
+            "id_firebase" varchar,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
+            );
+
+            CREATE TABLE "administrador" (
+            "id" UUID PRIMARY KEY,
+            "nombre" varchar,
+            "email" varchar,
+            "telefono" varchar,
+            "id_estado" UUID,
+            "id_firebase" varchar,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
+            );
+
+            CREATE TABLE "administrador_conjunto" (
+            "id" UUID PRIMARY KEY,
+            "id_administrador" UUID,
+            "id_conjunto" UUID,
+            "id_estado" UUID,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
             CREATE TABLE "tipo_residente" (
-            "id" serial PRIMARY KEY,
+            "id" UUID PRIMARY KEY,
             "tipo" varchar,
-            "fecha_creacion" timestamp
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
-            CREATE TABLE "estado_residente" (
-            "id" serial PRIMARY KEY,
-            "estado" varchar,
-            "fecha_creacion" timestamp
-            );
-
-            CREATE TABLE "solicitud" (
-            "id" serial PRIMARY KEY,
-            "id_residente" integer,
-            "id_estado" integer,
+            CREATE TABLE "solicitud_registro" (
+            "id" UUID PRIMARY KEY,
+            "id_residente" UUID,
+            "id_estado" UUID,
+            "id_conjunto" UUID,
             "descripcion" varchar,
             "comentario" varchar,
-            "fecha_creacion" timestamp
-            );
-
-            CREATE TABLE "estado_solicitud" (
-            "id" serial PRIMARY KEY,
-            "estado" varchar,
-            "fecha_creacion" timestamp
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
             CREATE TABLE "unidad" (
-            "id" serial PRIMARY KEY,
+            "id" UUID PRIMARY KEY,
             "interior" integer,
             "apto" integer,
-            "id_conjunto" integer,
-            "fecha_creacion" timestamp
+            "id_conjunto" UUID,
+            "id_estado" UUID,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
             CREATE TABLE "residente_unidad" (
-            "id" serial PRIMARY KEY,
-            "id_residente" integer,
-            "id_unidad" integer,
-            "id_estado" integer,
-            "fecha_creacion" timestamp
+            "id" UUID PRIMARY KEY,
+            "id_residente" UUID,
+            "id_unidad" UUID,
+            "id_estado" UUID,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
-            CREATE TABLE "estado_residente_unidad" (
-            "id" serial PRIMARY KEY,
-            "estado" varchar,
-            "fecha_creacion" timestamp
-            );
-
-            CREATE TABLE "factura_unidad" (
-            "id" serial PRIMARY KEY,
-            "id_unidad" integer,
-            "id_estado" integer,
+            CREATE TABLE "cuenta_cobro_unidad" (
+            "id" UUID PRIMARY KEY,
+            "id_unidad" UUID,
+            "id_estado" UUID,
             "fecha_inicio" timestamp,
             "fecha_fin" timestamp,
-            "total" integer,
-            "fecha_creacion" timestamp
+            "total" decimal(10,2),
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
-            CREATE TABLE "estado_factura_unidad" (
-            "id" serial PRIMARY KEY,
-            "estado" varchar,
-            "fecha_creacion" timestamp
-            );
-
-            CREATE TABLE "concepto_factura" (
-            "id" serial PRIMARY KEY,
-            "id_factura" integer,
-            "id_concepto" integer,
-            "valor" decimal,
-            "fecha_creacion" timestamp
+            CREATE TABLE "concepto_cuenta_cobro" (
+            "id" UUID PRIMARY KEY,
+            "id_cuenta_cobro" UUID,
+            "id_concepto" UUID,
+            "valor" decimal(10,2),
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
             CREATE TABLE "concepto" (
-            "id" serial PRIMARY KEY,
+            "id" UUID PRIMARY KEY,
             "nombre" varchar,
-            "valor" decimal,
-            "fecha_creacion" timestamp
+            "valor" decimal(10,2),
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
             CREATE TABLE "unidad_concepto" (
-            "id" serial PRIMARY KEY,
-            "id_unidad" integer,
-            "id_concepto" integer,
-            "fecha_creacion" timestamp
+            "id" UUID PRIMARY KEY,
+            "id_unidad" UUID,
+            "id_concepto" UUID,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
+            );
+
+            CREATE TABLE "metodo_pago" (
+            "id" UUID PRIMARY KEY,
+            "nombre" varchar,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
             CREATE TABLE "pago" (
-            "id" serial PRIMARY KEY,
-            "id_factura_unidad" integer,
-            "valor" decimal,
-            "metodo_pago" varchar,
-            "fecha_creacion" timestamp
+            "id" UUID PRIMARY KEY,
+            "id_cuenta_cobro_unidad" UUID,
+            "valor" decimal(10,2),
+            "id_metodo_pago" UUID,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
             );
 
-            ALTER TABLE "conjunto" ADD FOREIGN KEY ("id_estado_conjunto") REFERENCES "estado_conjunto" ("id");
+            CREATE TABLE "parqueadero" (
+            "id" UUID PRIMARY KEY,
+            "id_tipo_parqueadero" UUID,
+            "id_estado" UUID,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
+            );
+
+            CREATE TABLE "tipo_parquedero" (
+            "id" UUID PRIMARY KEY,
+            "tipo" varchar,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
+            );
+
+            CREATE TABLE "unidad_parqueadero" (
+            "id" UUID PRIMARY KEY,
+            "id_unidad" UUID,
+            "id_parqueadero" UUID,
+            "id_estado" UUID,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
+            );
+
+            ALTER TABLE "residente_conjunto" ADD FOREIGN KEY ("id_residente") REFERENCES "residente" ("id");
+
+            ALTER TABLE "residente_conjunto" ADD FOREIGN KEY ("id_conjunto") REFERENCES "conjunto" ("id");
+
+            ALTER TABLE "residente_conjunto" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
+
+            ALTER TABLE "conjunto" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
 
             ALTER TABLE "notificacion" ADD FOREIGN KEY ("id_aviso") REFERENCES "aviso" ("id");
 
             ALTER TABLE "notificacion" ADD FOREIGN KEY ("id_unidad") REFERENCES "unidad" ("id");
 
-            ALTER TABLE "residente" ADD FOREIGN KEY ("id_tipo") REFERENCES "tipo_residente" ("id");
+            ALTER TABLE "administrador" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
 
-            ALTER TABLE "residente" ADD FOREIGN KEY ("id_conjunto") REFERENCES "conjunto" ("id");
+            ALTER TABLE "administrador_conjunto" ADD FOREIGN KEY ("id_administrador") REFERENCES "administrador" ("id");
 
-            ALTER TABLE "residente" ADD FOREIGN KEY ("id_estado") REFERENCES "estado_residente" ("id");
+            ALTER TABLE "administrador_conjunto" ADD FOREIGN KEY ("id_conjunto") REFERENCES "conjunto" ("id");
 
-            ALTER TABLE "solicitud" ADD FOREIGN KEY ("id_residente") REFERENCES "residente" ("id");
+            ALTER TABLE "administrador_conjunto" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
 
-            ALTER TABLE "solicitud" ADD FOREIGN KEY ("id_estado") REFERENCES "estado_solicitud" ("id");
+            ALTER TABLE "solicitud_registro" ADD FOREIGN KEY ("id_residente") REFERENCES "residente" ("id");
+
+            ALTER TABLE "solicitud_registro" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
+
+            ALTER TABLE "solicitud_registro" ADD FOREIGN KEY ("id_conjunto") REFERENCES "conjunto" ("id");
 
             ALTER TABLE "unidad" ADD FOREIGN KEY ("id_conjunto") REFERENCES "conjunto" ("id");
+
+            ALTER TABLE "unidad" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
 
             ALTER TABLE "residente_unidad" ADD FOREIGN KEY ("id_residente") REFERENCES "residente" ("id");
 
             ALTER TABLE "residente_unidad" ADD FOREIGN KEY ("id_unidad") REFERENCES "unidad" ("id");
 
-            ALTER TABLE "residente_unidad" ADD FOREIGN KEY ("id_estado") REFERENCES "estado_residente_unidad" ("id");
+            ALTER TABLE "residente_unidad" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
 
-            ALTER TABLE "factura_unidad" ADD FOREIGN KEY ("id_unidad") REFERENCES "unidad" ("id");
+            ALTER TABLE "cuenta_cobro_unidad" ADD FOREIGN KEY ("id_unidad") REFERENCES "unidad" ("id");
 
-            ALTER TABLE "factura_unidad" ADD FOREIGN KEY ("id_estado") REFERENCES "estado_factura_unidad" ("id");
+            ALTER TABLE "cuenta_cobro_unidad" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
 
-            ALTER TABLE "concepto_factura" ADD FOREIGN KEY ("id_factura") REFERENCES "factura_unidad" ("id");
+            ALTER TABLE "concepto_cuenta_cobro" ADD FOREIGN KEY ("id_cuenta_cobro") REFERENCES "cuenta_cobro_unidad" ("id");
 
-            ALTER TABLE "concepto_factura" ADD FOREIGN KEY ("id_concepto") REFERENCES "concepto" ("id");
+            ALTER TABLE "concepto_cuenta_cobro" ADD FOREIGN KEY ("id_concepto") REFERENCES "concepto" ("id");
 
             ALTER TABLE "unidad_concepto" ADD FOREIGN KEY ("id_unidad") REFERENCES "unidad" ("id");
 
             ALTER TABLE "unidad_concepto" ADD FOREIGN KEY ("id_concepto") REFERENCES "concepto" ("id");
 
-            ALTER TABLE "pago" ADD FOREIGN KEY ("id_factura_unidad") REFERENCES "factura_unidad" ("id");
+            ALTER TABLE "pago" ADD FOREIGN KEY ("id_cuenta_cobro_unidad") REFERENCES "cuenta_cobro_unidad" ("id");
 
+            ALTER TABLE "pago" ADD FOREIGN KEY ("id_metodo_pago") REFERENCES "metodo_pago" ("id");
+
+            ALTER TABLE "parqueadero" ADD FOREIGN KEY ("id_tipo_parqueadero") REFERENCES "tipo_parquedero" ("id");
+
+            ALTER TABLE "unidad_parqueadero" ADD FOREIGN KEY ("id_parqueadero") REFERENCES "parqueadero" ("id");
+
+            ALTER TABLE "unidad_parqueadero" ADD FOREIGN KEY ("id_unidad") REFERENCES "unidad" ("id");
+
+            ALTER TABLE "unidad_parqueadero" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
+
+            ALTER TABLE "residente" ADD FOREIGN KEY ("id_tipo") REFERENCES "tipo_residente" ("id");
         </sql>
     </changeSet>
 

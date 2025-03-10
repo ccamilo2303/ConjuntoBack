@@ -8,11 +8,8 @@ import lombok.Setter;
 import java.time.Instant;
 import java.util.UUID;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "unidad_parqueadero")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UnidadParqueadero {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -37,4 +34,52 @@ public class UnidadParqueadero {
     @Column(name = "fecha_actualizacion")
     private Instant fechaActualizacion;
 
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Unidad getIdUnidad() {
+        return idUnidad;
+    }
+
+    public void setIdUnidad(Unidad idUnidad) {
+        this.idUnidad = idUnidad;
+    }
+
+    public Parqueadero getIdParqueadero() {
+        return idParqueadero;
+    }
+
+    public void setIdParqueadero(Parqueadero idParqueadero) {
+        this.idParqueadero = idParqueadero;
+    }
+
+    public Estado getIdEstado() {
+        return idEstado;
+    }
+
+    public void setIdEstado(Estado idEstado) {
+        this.idEstado = idEstado;
+    }
+
+    public Instant getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(Instant fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public Instant getFechaActualizacion() {
+        return fechaActualizacion;
+    }
+
+    public void setFechaActualizacion(Instant fechaActualizacion) {
+        this.fechaActualizacion = fechaActualizacion;
+    }
 }

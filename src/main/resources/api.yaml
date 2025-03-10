@@ -120,10 +120,8 @@ paths:
         - in: query
           name: estadoSolicitud
           required: false
-          description: Filtra las solicitudes por estado. Puede ser '1=pendiente', '2=en gestion', o '33=rechazado'.
           schema:
-            type: integer
-            enum: [1, 2, 3]
+            type: string
         - in: query
           name: page
           required: false
@@ -163,7 +161,7 @@ paths:
           required: true
           description: ID del residente
           schema:
-            type: integer
+            type: string
         - in: query
           name: c
           required: true
@@ -1498,8 +1496,11 @@ components:
       type: object
       properties:
         size:
-          type: number
+          type: integer
+          format: int32
         page:
-          type: number
+          type: integer
+          format: int32
         nextPage:
-          type: number
+          type: integer
+          format: int32

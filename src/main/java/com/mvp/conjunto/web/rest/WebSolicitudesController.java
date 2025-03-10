@@ -23,20 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class WebSolicitudesController implements WebSolicitudesApi {
-/*
+
     private final WebSolicitudesService webSolicitudesService;
 
     @Override
-    public ResponseEntity<Solicitud> solicitudes(String c, Integer estadoSolicitud, Integer page, Integer size) {
+    public ResponseEntity<Solicitud> solicitudes(String c, String estadoSolicitud, Integer page, Integer size) {
         return ResponseEntity.ok(webSolicitudesService.solicitudes(c, estadoSolicitud, page, size));
 
     }
 
     @Override
-    public ResponseEntity<Void> solicitudEstado(Integer id, String c, SolicitudEstadoRequest solicitudEstadoRequest) {
+    public ResponseEntity<Void> solicitudEstado(String id, String c, SolicitudEstadoRequest solicitudEstadoRequest) {
         webSolicitudesService.solicitudEstado(id, c, solicitudEstadoRequest);
         return ResponseEntity.ok().build();
 
     }
-*/
+
 }

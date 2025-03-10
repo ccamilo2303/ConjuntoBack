@@ -14,13 +14,13 @@ public interface WebSolicitudesService {
      * @param size
      * @return
      */
-    Solicitud solicitudes(String c, Integer estadoSolicitud, Integer page, Integer size );
+    Solicitud solicitudes(String c, String estadoSolicitud, Integer page, Integer size );
 
     /**
      * @param id
      * @param c
      * @param solicitudEstadoRequest
      */
-    void solicitudEstado(Integer id, String c, SolicitudEstadoRequest solicitudEstadoRequest);
+    void solicitudEstado(String id, String c, SolicitudEstadoRequest solicitudEstadoRequest);
 
 }

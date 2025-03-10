@@ -1,6 +1,5 @@
 package com.mvp.conjunto.domain.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +11,6 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "unidad_concepto")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class UnidadConcepto {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

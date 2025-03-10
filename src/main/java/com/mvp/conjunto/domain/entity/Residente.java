@@ -30,8 +30,9 @@ public class Residente {
     @Column(name = "telefono", length = Integer.MAX_VALUE)
     private String telefono;
 
-    @Column(name = "id_tipo")
-    private UUID idTipo;
+    @JoinColumn(name = "id_tipo")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TipoResidente idTipo;
 
     @Column(name = "id_estado")
     private UUID idEstado;
