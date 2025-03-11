@@ -124,14 +124,14 @@ paths:
             type: string
         - in: query
           name: page
-          required: false
+          required: true
           description: Número de registros a devolver por página (paginación).
           schema:
             type: integer
             default: 10
         - in: query
           name: size
-          required: false
+          required: true
           description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
           schema:
             type: integer
@@ -159,7 +159,7 @@ paths:
         - in: path
           name: id
           required: true
-          description: ID del residente
+          description: ID de la solicitud
           schema:
             type: string
         - in: query
@@ -175,8 +175,7 @@ paths:
               type: object
               properties:
                 estadoSolicitud:
-                  type: integer
-                  enum: [1, 2, 3]
+                  type: string
                 motivoRechazo:
                   type: string
                   nullable: true
@@ -195,14 +194,14 @@ paths:
       parameters:
         - in: query
           name: page
-          required: false
+          required: true
           description: Número de registros a devolver por página (paginación).
           schema:
             type: integer
             default: 10
         - in: query
           name: size
-          required: false
+          required: true
           description: Número de registros a omitir antes de empezar a devolver los resultados (paginación).
           schema:
             type: integer
@@ -225,7 +224,7 @@ paths:
         '404':
           description: No se encontraron solicitudes
 
-  /web/residente/{id}/estado:
+  /web/residente/{idResidente}/estado:
     put:
       tags:
         - web-residentes
@@ -233,11 +232,11 @@ paths:
       summary: Cambiar estado del residente
       parameters:
         - in: path
-          name: id
+          name: idResidente
           required: true
           description: ID del residente
           schema:
-            type: integer
+            type: string
         - in: query
           name: c
           required: true
@@ -251,14 +250,14 @@ paths:
               type: object
               properties:
                 idEstado:
-                  type: integer
+                  type: string
       responses:
         '200':
           description: Estado de la solicitud actualizado
         '400':
           description: Error al actualizar el estado
 
-  /web/residente/{id}/tipo:
+  /web/residente/{idResidente}/tipo:
     put:
       tags:
         - web-residentes
@@ -266,11 +265,11 @@ paths:
       summary: Cambiar tipo del residente
       parameters:
         - in: path
-          name: id
+          name: idResidente
           required: true
           description: ID del residente
           schema:
-            type: integer
+            type: string
         - in: query
           name: c
           required: true
@@ -284,7 +283,7 @@ paths:
               type: object
               properties:
                 idTipo:
-                  type: integer
+                  type: string
       responses:
         '200':
           description: Estado de la solicitud actualizado
@@ -304,7 +303,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
         - in: query
           name: page
           required: false
@@ -1352,12 +1351,10 @@ components:
       type: object
       properties:
         id:
-          type: integer
+          type: string
         interior:
-          type: integer
+          type: string
         apto:
-          type: integer
-        conjunto:
           type: string
         estado:
           type: string
@@ -1386,7 +1383,7 @@ components:
       type: object
       properties:
         idResidenteUnidad:
-          type: number
+          type: string
         nombre:
           type: string
         email:
@@ -1398,7 +1395,7 @@ components:
         estado:
           type: string
         fechaRegistro:
-          type: number
+          type: string
 
     UnidadConceptos:
       type: object

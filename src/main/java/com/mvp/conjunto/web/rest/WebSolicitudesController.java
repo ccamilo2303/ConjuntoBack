@@ -27,9 +27,8 @@ public class WebSolicitudesController implements WebSolicitudesApi {
     private final WebSolicitudesService webSolicitudesService;
 
     @Override
-    public ResponseEntity<Solicitud> solicitudes(String c, String estadoSolicitud, Integer page, Integer size) {
+    public ResponseEntity<Solicitud> solicitudes(String c, Integer page, Integer size, String estadoSolicitud) {
         return ResponseEntity.ok(webSolicitudesService.solicitudes(c, estadoSolicitud, page, size));
-
     }
 
     @Override

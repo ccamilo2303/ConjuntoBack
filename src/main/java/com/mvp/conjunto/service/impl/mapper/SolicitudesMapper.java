@@ -1,4 +1,4 @@
-package com.mvp.conjunto.service.mapper;
+package com.mvp.conjunto.service.impl.mapper;
 
 import com.mvp.conjunto.domain.entity.SolicitudRegistro;
 import com.mvp.conjunto.web.api.model.SolicitudSolicitudesInner;

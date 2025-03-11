@@ -14,7 +14,6 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "residente")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Residente {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -34,8 +33,9 @@ public class Residente {
     @ManyToOne(fetch = FetchType.LAZY)
     private TipoResidente idTipo;
 
-    @Column(name = "id_estado")
-    private UUID idEstado;
+    @JoinColumn(name = "id_estado")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Estado idEstado;
 
     @Column(name = "id_firebase", length = Integer.MAX_VALUE)
     private String idFirebase;

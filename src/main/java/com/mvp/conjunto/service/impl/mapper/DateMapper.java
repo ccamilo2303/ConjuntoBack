@@ -1,4 +1,4 @@
-package com.mvp.conjunto.service.mapper;
+package com.mvp.conjunto.service.impl.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

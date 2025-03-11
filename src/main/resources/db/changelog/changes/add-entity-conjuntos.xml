@@ -257,6 +257,8 @@
             ALTER TABLE "unidad_parqueadero" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
 
             ALTER TABLE "residente" ADD FOREIGN KEY ("id_tipo") REFERENCES "tipo_residente" ("id");
+
+            ALTER TABLE "residente" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
         </sql>
     </changeSet>
 

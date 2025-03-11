@@ -12,7 +12,6 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "tipo_residente")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class TipoResidente {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
