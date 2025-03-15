@@ -16,5 +16,7 @@ import java.util.UUID;
 public interface ResidenteRepository extends JpaRepository<Residente, UUID> , JpaSpecificationExecutor<Residente> {
 
   @NotNull Page<Residente> findAll(Specification specification, @NotNull Pageable pageable);
+  Optional<Residente> findById(UUID id);
+
 
 }

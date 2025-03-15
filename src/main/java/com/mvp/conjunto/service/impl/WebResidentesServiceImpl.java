@@ -99,8 +99,10 @@ public class WebResidentesServiceImpl implements WebResidentesService {
 
     @Override
     public void residenteTipo(String id, String c, ResidenteTipoRequest residenteTipoRequest) {
-        com.mvp.conjunto.domain.entity.ResidenteConjunto residenteConjunto = residenteConjuntoRepository.findByIdConjuntoAndIdResidente(UUID.fromString(c), UUID.fromString(id)).orElseThrow();
+        com.mvp.conjunto.domain.entity.Residente residente = residenteRepository.findById(UUID.fromString(id)).orElseThrow();
+        log.info("[residenteTipo][residente] : {}", residente);
         TipoResidente tipoResidente = tipoResidenteRepository.findById(UUID.fromString(residenteTipoRequest.getIdTipo())).orElseThrow();
-
+        residente.setIdTipo(tipoResidente);
+        residenteRepository.save(residente);
     }
 }

@@ -385,7 +385,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
         - in: query
           name: page
           required: false
@@ -430,7 +430,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
         - in: query
           name: page
           required: false
@@ -474,7 +474,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
         - in: query
           name: page
           required: false
@@ -517,12 +517,12 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
         - name: idConcepto
           in: path
           required: true
           schema:
-            type: integer
+            type: string
         - in: query
           name: c
           required: true
@@ -547,12 +547,12 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
         - name: idResidente
           in: path
           required: true
           schema:
-            type: integer
+            type: string
         - in: query
           name: c
           required: true
@@ -578,7 +578,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
         - in: query
           name: c
           required: true
@@ -661,7 +661,7 @@ paths:
           in: query
           required: false
           schema:
-            type: integer
+            type: string
         - name: estado
           in: query
           required: false
@@ -673,6 +673,11 @@ paths:
           schema:
             type: string
         - name: fechaFin
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: c
           in: query
           required: false
           schema:
@@ -1144,8 +1149,7 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          example: 1
+          type: string
         nombre:
           type: string
           example: "Cuota de administración"
@@ -1154,7 +1158,7 @@ components:
           format: double
           example: 150000
         fechaRegistro:
-          type: integer
+          type: string
     ConceptoCrear:
       type: object
       properties:
@@ -1378,6 +1382,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Residente'
+        pages:
+          type: object
+          $ref: '#/components/schemas/Pages'
 
     Residente:
       type: object
@@ -1404,6 +1411,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Concepto'
+        pages:
+          type: object
+          $ref: '#/components/schemas/Pages'
 
     UnidadCuentasCobro:
       type: object
@@ -1432,21 +1442,22 @@ components:
       type: object
       properties:
         id:
-          type: number
+          type: string
         estado:
           type: string
         fechaInicio:
-          type: number
+          type: string
         fechaFin:
-          type: number
+          type: string
         total:
           type: number
+          format: double
         conceptos:
           type: array
           items:
             $ref: '#/components/schemas/Concepto'
         fechaRegistro:
-          type: number
+          type: string
         unidad:
           type: object
           $ref: '#/components/schemas/Unidad'

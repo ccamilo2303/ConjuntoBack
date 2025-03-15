@@ -58,7 +58,7 @@ public class SolicitudRegistroSpec {
                 }
             });
 
-            return field == null ? cb.conjunction() : cb.equal(path.get(), value);
+            return field == null || value == null ? cb.conjunction() : cb.equal(path.get(), value);
         };
     }
     private static Specification<?> hasIdUnidadConjunto(String idConjunto) {
