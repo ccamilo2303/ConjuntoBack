@@ -1168,17 +1168,13 @@ components:
     ConjuntosRes:
       type: object
       properties:
-        total:
-          type: integer
-          description: Total de conjuntos residenciales disponibles
-          example: 25
         conjuntos:
           type: array
           items:
             type: object
             properties:
               id:
-                type: integer
+                type: string
                 description: ID único del conjunto residencial
                 example: 101
               nombre:
@@ -1191,14 +1187,10 @@ components:
                 example: "Bogotá"
               estado:
                 type: string
-                enum: ['activo', 'inactivo']
                 description: Estado del conjunto residencial
-                example: "activo"
               fecha_creacion:
                 type: string
-                format: date-time
                 description: Fecha en que fue creado el conjunto residencial
-                example: "2020-05-15T14:30:00Z"
               direccion:
                 type: string
                 description: direccion del conjunto residencial

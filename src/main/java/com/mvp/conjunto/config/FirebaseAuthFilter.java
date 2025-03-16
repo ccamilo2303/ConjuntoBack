@@ -1,5 +1,5 @@
 package com.mvp.conjunto.config;
-/*
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,13 +14,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;*/
+import java.util.Collections;
 
-//@Component
-public class FirebaseAuthFilter /*extends OncePerRequestFilter*/{
+@Component
+public class FirebaseAuthFilter extends OncePerRequestFilter{
 
-  //  @Override
-    /*protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
         String token = getTokenFromRequest(request);
@@ -50,5 +50,5 @@ public class FirebaseAuthFilter /*extends OncePerRequestFilter*/{
             return bearerToken.substring(7);
         }
         return null;
-    }*/
+    }
 }
