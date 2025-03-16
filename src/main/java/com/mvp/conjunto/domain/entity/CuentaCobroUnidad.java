@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -13,9 +14,11 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@ToString
 @Entity
 @Table(name = "cuenta_cobro_unidad")
 public class CuentaCobroUnidad {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)

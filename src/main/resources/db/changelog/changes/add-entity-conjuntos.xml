@@ -148,6 +148,14 @@
             "fecha_actualizacion" timestamp
             );
 
+            CREATE TABLE "concepto_conjunto" (
+            "id" UUID PRIMARY KEY,
+            "id_concepto" uuid,
+            "id_conjunto" uuid,
+            "fecha_creacion" timestamp,
+            "fecha_actualizacion" timestamp
+            );
+
             CREATE TABLE "unidad_concepto" (
             "id" UUID PRIMARY KEY,
             "id_unidad" UUID,
@@ -216,6 +224,8 @@
 
             ALTER TABLE "administrador_conjunto" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
 
+            ALTER TABLE "residente" ADD FOREIGN KEY ("id_tipo") REFERENCES "tipo_residente" ("id");
+
             ALTER TABLE "solicitud_registro" ADD FOREIGN KEY ("id_residente") REFERENCES "residente" ("id");
 
             ALTER TABLE "solicitud_registro" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
@@ -240,6 +250,10 @@
 
             ALTER TABLE "concepto_cuenta_cobro" ADD FOREIGN KEY ("id_concepto") REFERENCES "concepto" ("id");
 
+            ALTER TABLE "concepto_conjunto" ADD FOREIGN KEY ("id_concepto") REFERENCES "concepto" ("id");
+
+            ALTER TABLE "concepto_conjunto" ADD FOREIGN KEY ("id_conjunto") REFERENCES "conjunto" ("id");
+
             ALTER TABLE "unidad_concepto" ADD FOREIGN KEY ("id_unidad") REFERENCES "unidad" ("id");
 
             ALTER TABLE "unidad_concepto" ADD FOREIGN KEY ("id_concepto") REFERENCES "concepto" ("id");
@@ -256,9 +270,6 @@
 
             ALTER TABLE "unidad_parqueadero" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
 
-            ALTER TABLE "residente" ADD FOREIGN KEY ("id_tipo") REFERENCES "tipo_residente" ("id");
-
-            ALTER TABLE "residente" ADD FOREIGN KEY ("id_estado") REFERENCES "estado" ("id");
         </sql>
     </changeSet>
 

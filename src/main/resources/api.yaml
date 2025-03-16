@@ -748,28 +748,9 @@ paths:
                 type: object
                 properties:
                   id:
-                    type: integer
+                    type: string
                     description: ID del pago registrado
                     example: 456
-                  factura_id:
-                    type: integer
-                    description: ID de la factura asociada al pago
-                    example: 345
-                  monto_pagado:
-                    type: number
-                    format: float
-                    description: Monto pagado
-                    example: 150000.00
-                  metodo_pago:
-                    type: string
-                    enum: ['transferencia', 'efectivo']
-                    description: Método de pago utilizado
-                    example: "transferencia"
-                  fecha_pago:
-                    type: string
-                    format: date-time
-                    description: Fecha en que se registró el pago
-                    example: "2025-01-30T14:30:00Z"
         '400':
           description: Error en los datos proporcionados (por ejemplo, factura no encontrada)
         '404':
@@ -1047,6 +1028,13 @@ paths:
       operationId: crearConcepto
       summary: Crear un nuevo concepto
       description: Permite al administrador agregar un nuevo concepto con su valor.
+      parameters:
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1074,7 +1062,7 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
       requestBody:
         required: true
         content:
@@ -1097,7 +1085,13 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
+            type: string
+        - in: query
+          name: c
+          required: true
+          description: Id del conjunto
+          schema:
+            type: string
       responses:
         '200':
           description: Concepto eliminado exitosamente
@@ -1466,26 +1460,28 @@ components:
       type: object
       properties:
         fechaInicio:
-          type: number
+          type: string
         fechaFin:
-          type: number
+          type: string
 
     RegistrarCuentaCobroUnidad:
       type: object
       properties:
         fechaInicio:
-          type: number
+          type: string
         fechaFin:
-          type: number
+          type: string
         idConcepto:
-          type: number
+          type: array
+          items:
+            type: string
         idUnidad:
-          type: number
+          type: string
     PagoManual:
       type: object
       properties:
         idCuenta:
-          type: number
+          type: string
         montoPagado:
           type: number
           format: float
