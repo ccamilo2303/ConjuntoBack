@@ -1,16 +1,8 @@
 package com.mvp.conjunto.web.rest;
 
-import com.mvp.conjunto.service.AppService;
-import com.mvp.conjunto.service.WebService;
-import com.mvp.conjunto.web.api.AppApi;
 import com.mvp.conjunto.web.api.WebApi;
-import com.mvp.conjunto.web.api.model.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
